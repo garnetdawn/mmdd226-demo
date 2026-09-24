@@ -1,0 +1,115 @@
+:root {
+    --text-color: #212121;
+    --title-color: #ffffff;
+    --subtitle-color: #0059ff;
+    --line-color: #212121;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    background: #000000;
+}
+
+p {
+    padding-top: 30px;
+}
+
+/* Background Canvas */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.grid-container {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr 60px 1fr 60px;
+    /* Header, topics 1, spacer, topics 2, footer */
+    width: 80%;
+    max-width: 900px;
+    height: 100vh;
+}
+
+/* Common block styles */
+.block {
+    padding: 30px;
+    background-color: transparent;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.block:hover,
+.block:hover h2 {
+    color: #ffffff;
+}
+
+.block-L {
+    text-align: right;
+    border-right: 2px solid var(--line-color);
+}
+
+.block-R {
+    text-align: left;
+    border-left: 2px solid var(--line-color);
+}
+
+h1 {
+    font-family: "tt-modernoir", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 50pt;
+    color: var(--title-color);
+}
+
+h2 {
+    color: var(--text-color);
+    margin-bottom: 8px;
+    font-family: "tt-modernoir", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    transition: color 0.3s ease;
+}
+
+.subtitle {
+    color: var(--subtitle-color);
+    font-family: "tt-modernoir", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 20pt;
+}
+
+/* Header Block */
+.header-block {
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+/* Topic Blocks */
+.topic-block {
+    background-color: transparent;
+}
+
+/* Spacer & Footer Blocks */
+.spacer-block {
+    grid-column: 1 / -1;
+    background-color: transparent;
+}
