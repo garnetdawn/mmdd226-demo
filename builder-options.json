@@ -1,0 +1,78 @@
+{
+  "baseBurgerPrice": 10.99,
+  "bread": {
+    "required": true,
+    "maxSelect": 1,
+    "description": "Required choice. Can select only one.",
+    "options": [
+      { "id": "sesame", "name": "Sesame Seed Bun", "price": 0 },
+      { "id": "gluten-free", "name": "Gluten Free Bun", "price": 0 },
+      { "id": "multigrain", "name": "Multigrain Bun", "price": 0 },
+      { "id": "potato-bun", "name": "Potato Bun", "price": 0 },
+      { "id": "ciabatta", "name": "Ciabatta", "price": 0 }
+    ]
+  },
+  "patty": {
+    "freeCount": 1,
+    "extraPrice": 4.70,
+    "allowMultiple": true,
+    "description": "First 1 is free, extra patties are +$4.70 each. Can add multiple of the same option.",
+    "options": [
+      { "id": "beef-patty", "name": "Angus Beef Patty" },
+      { "id": "smash-patty", "name": "Crispy Smash Patty" },
+      { "id": "chicken-patty", "name": "Crispy Chicken Patty" },
+      { "id": "veggie-patty", "name": "Black Bean Veggie Patty" },
+      { "id": "beyond-patty", "name": "Plant-Based Beyond Patty" }
+    ]
+  },
+  "toppings": {
+    "pricePerItem": 1.29,
+    "allowMultiple": true,
+    "description": "Each topping is +$1.29 each. Can add multiple of the same option, still charging for each one.",
+    "options": [
+      { "id": "cheddar", "name": "Cheddar" },
+      { "id": "smoked-cheddar", "name": "Smoked Cheddar" },
+      { "id": "blue-cheese", "name": "Blue Cheese" },
+      { "id": "crispy-onions", "name": "Crispy Onions" },
+      { "id": "fried-egg", "name": "Fried Egg" },
+      { "id": "guacamole", "name": "Guacamole" },
+      { "id": "beef-bacon", "name": "Beef Bacon" },
+      { "id": "strip-bacon", "name": "Strip Bacon" },
+      { "id": "mushrooms", "name": "Mushrooms" }
+    ]
+  },
+  "saladAndSauces": {
+    "freeCount": 6,
+    "extraPrice": 0.50,
+    "allowMultiple": true,
+    "description": "First 6 are free, extra are +$0.50 each. Can add multiple of the same option.",
+    "options": [
+      { "id": "pickle", "name": "Pickle" },
+      { "id": "lettuce", "name": "Lettuce" },
+      { "id": "tomato", "name": "Tomato" },
+      { "id": "mustard", "name": "Mustard" },
+      { "id": "mayo", "name": "Mayo" },
+      { "id": "bbq", "name": "BBQ" },
+      { "id": "chipotle", "name": "Chipotle" },
+      { "id": "red-onion", "name": "Red Onion" },
+      { "id": "jalapeno", "name": "Jalapeno" }
+    ]
+  },
+  "combo": {
+    "basePrice": 4.99,
+    "description": "Combo toggle: adds a side and drink. Disappears if no combo is selected.",
+    "sides": [
+      { "id": "poutine", "name": "Poutine", "extraPrice": 1.50 },
+      { "id": "fries", "name": "Fries", "extraPrice": 0.00 },
+      { "id": "sweet-potato-fries", "name": "Sweet Potato Fries", "extraPrice": 0.75 },
+      { "id": "onion-rings", "name": "Onion Rings", "extraPrice": 0.75 }
+    ],
+    "drinks": [
+      { "id": "fountain-drink", "name": "Fountain Drink", "extraPrice": 0.00 },
+      { "id": "vanilla-milkshake", "name": "Vanilla Milkshake", "extraPrice": 1.50 },
+      { "id": "strawberry-milkshake", "name": "Strawberry Milkshake", "extraPrice": 1.50 },
+      { "id": "orange-juice", "name": "Orange Juice", "extraPrice": 0.50 }
+    ]
+  }
+}
+

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Burger Prototype</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+    <script src="checkout.js" defer></script>
+</head>
+<body>
+    <!-- Top Navigation Header -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <a href="index.html" class="nav-logo" title="Back to Menu">LOGO</a>
+            <span class="nav-page-label">Checkout</span>
+        </div>
+        <div class="nav-actions">
+            <a href="index.html" class="back-to-menu-link">
+                &larr; Back to Menu
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Checkout Container -->
+    <main class="checkout-main">
+        <div class="checkout-container">
+            <!-- Left Column: Checkout Details Form -->
+            <section class="checkout-form-section">
+                <form id="checkout-form" class="checkout-form" onsubmit="return false;">
+                    <!-- Order Mode Indicator -->
+                    <div class="form-header-row">
+                        <h2>Order Details</h2>
+                        <span class="mode-badge" id="checkout-mode-badge">Pickup</span>
+                    </div>
+
+                    <!-- Contact Details -->
+                    <fieldset class="form-group-box">
+                        <legend>Contact Information</legend>
+                        <div class="form-row">
+                            <label for="customer-name">Full Name</label>
+                            <input type="text" id="customer-name" placeholder="e.g. Jane Doe" required value="Jane Doe">
+                        </div>
+                        <div class="form-row">
+                            <label for="customer-phone">Phone Number</label>
+                            <input type="tel" id="customer-phone" placeholder="(555) 000-0000" required value="(555) 234-5678">
+                        </div>
+                    </fieldset>
+
+                    <!-- Fulfillment Details -->
+                    <fieldset class="form-group-box" id="fulfillment-fieldset">
+                        <legend id="fulfillment-legend">Fulfillment Details</legend>
+                        <div id="fulfillment-content">
+                            <!-- Populated based on Pickup / Delivery -->
+                        </div>
+                    </fieldset>
+
+                    <!-- Payment Method Placeholder -->
+                    <fieldset class="form-group-box">
+                        <legend>Payment Method</legend>
+                        <div class="payment-options">
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="card" checked>
+                                <span>Credit / Debit Card</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="counter">
+                                <span>Pay at Counter</span>
+                            </label>
+                        </div>
+                        <div class="form-row card-mockup">
+                            <input type="text" placeholder="Card Number (•••• •••• •••• 4242)" disabled value="•••• •••• •••• 4242">
+                        </div>
+                    </fieldset>
+
+                    <!-- Submit Button & Confirmation Status -->
+                    <div class="form-submit-container">
+                        <button type="button" id="submit-order-btn" class="submit-order-btn">
+                            Submit Order
+                        </button>
+                        <div class="order-confirmation-banner" id="order-confirmation-banner" style="display: none;">
+                            <div class="confirmation-icon">✓</div>
+                            <div class="confirmation-text">
+                                <strong>Order Confirmed!</strong>
+                                <span>Your burger order has been placed successfully.</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Right Column: Order Summary -->
+            <section class="checkout-summary-section">
+                <div class="summary-card">
+                    <h2>Order Summary</h2>
+                    <div class="summary-items-list" id="summary-items-list">
+                        <!-- Populated by checkout.js -->
+                    </div>
+
+                    <div class="summary-breakdown">
+                        <div class="breakdown-row">
+                            <span>Subtotal</span>
+                            <span id="summary-subtotal">$0.00</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>Estimated Tax (8%)</span>
+                            <span id="summary-tax">$0.00</span>
+                        </div>
+                        <div class="breakdown-row total-row">
+                            <span>Total</span>
+                            <span id="summary-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
+

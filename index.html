@@ -1,54 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONTRAST</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Burger Builder - Menu Prototype</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+    <script src="builder-logic.js" defer></script>
+    <script src="variation-a.js" defer></script>
+    <script src="variation-b.js" defer></script>
+    <script src="variation-c.js" defer></script>
+    <script src="variation-d.js" defer></script>
     <script src="script.js" defer></script>
-    <link rel="stylesheet" href="https://use.typekit.net/mwt0wra.css">
 </head>
-
 <body>
-    <canvas id="bg-canvas"></canvas>
-    <div class="grid-container">
-        <!-- Header Block -->
-        <header class="block header-block">
-            <h1>Contrast</h1>
-            <span class="subtitle">one of the 6 principles of graphic design</span>
-        </header>
-
-        <!-- Topic Row 1 -->
-        <div class="block topic-block block-L">
-            <h2>1. Guides the eye</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+    <!-- Top Navigation Header -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <a href="index.html" class="nav-logo" title="Return to Menu">LOGO</a>
+            <div class="order-toggle" id="order-mode-toggle" role="group" aria-label="Order Fulfillment Mode">
+                <button type="button" class="toggle-btn active" data-mode="pickup">Pickup</button>
+                <button type="button" class="toggle-btn" data-mode="delivery">Delivery</button>
+            </div>
         </div>
-        <div class="block topic-block block-R">
-            <h2>2. Defines the hierarchy</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+        <div class="nav-actions">
+            <button class="cart-btn" id="cart-btn" type="button" aria-label="Open cart">
+                <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-label">Cart</span>
+                <span class="cart-badge" id="cart-count">0</span>
+            </button>
         </div>
+    </header>
 
-        <!-- Spacer -->
-        <div class="block spacer-block spacer"></div>
+    <!-- Main Prototype Workspace Layout -->
+    <div class="layout-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-title">Categories</span>
+            </div>
+            <nav class="category-list" id="category-list">
+                <!-- Dynamically populated categories -->
+            </nav>
+        </aside>
 
-        <!-- Topic Row 2 -->
-        <div class="block topic-block block-L">
-            <h2>3. Allows readability</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-        </div>
-        <div class="block topic-block block-R">
-            <h2>4. Creates balance</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-        </div>
+        <!-- Main Menu Cards Area -->
+        <main class="menu-main">
+            <div class="menu-header">
+                <h1 class="category-heading" id="current-category-name">All Items</h1>
+                <span class="category-count" id="category-item-count">12 items</span>
+            </div>
 
-        <!-- Footer -->
-        <footer class="block spacer-block footer"></footer>
+            <!-- 4-Column Menu Grid -->
+            <div class="menu-grid" id="menu-grid">
+                <!-- Dynamically populated cards -->
+            </div>
+        </main>
     </div>
-</body>
 
+    <!-- Quick Preview / Placeholder Cart Drawer for Prototype -->
+    <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
+    <aside class="cart-drawer" id="cart-drawer" aria-hidden="true">
+        <div class="cart-drawer-header">
+            <h3>Your Order</h3>
+            <button class="close-drawer-btn" id="close-cart-btn" aria-label="Close cart">&times;</button>
+        </div>
+        <div class="cart-drawer-body" id="cart-drawer-items">
+            <div class="empty-cart-state">
+                <div class="empty-cart-icon">🛒</div>
+                <p>Your cart is empty.</p>
+                <span>Select an item from the menu to get started.</span>
+            </div>
+        </div>
+        <div class="cart-drawer-footer">
+            <div class="cart-subtotal-row">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">$0.00</span>
+            </div>
+            <a href="checkout.html" class="checkout-btn" id="checkout-btn">Proceed to Checkout</a>
+        </div>
+    </aside>
+
+    <!-- Builder Pop-up Modal Root Container -->
+    <div id="builder-modal-root"></div>
+
+    <!-- Prototype Variation Toggle Footer Bar -->
+    <footer class="variation-footer" id="variation-footer">
+        <div class="variation-footer-content">
+            <span class="variation-label">Builder Variation:</span>
+            <div class="variation-btn-group" role="group" aria-label="Builder Popup Variations">
+                <button type="button" class="variation-btn active" data-variation="A" aria-pressed="true">A</button>
+                <button type="button" class="variation-btn" data-variation="B" aria-pressed="false">B</button>
+                <button type="button" class="variation-btn" data-variation="C" aria-pressed="false">C</button>
+                <button type="button" class="variation-btn" data-variation="D" aria-pressed="false">D</button>
+            </div>
+        </div>
+    </footer>
+</body>
 </html>
+
