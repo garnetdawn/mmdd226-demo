@@ -5,6 +5,7 @@
  * Step 2: PATTY (Counter steppers with - and +, 1st free, extra +$4.70 each)
  * Step 3: TOPPINGS (Counter steppers with - and +, +$1.29 each)
  * Step 4: SALADS & CONDIMENTS (Counter steppers with - and +, first 6 free, extra +$0.50 each)
+ * Step 5: COMBO (Toggle combo or no combo, select side and drink)
  */
 
 (function () {
@@ -12,7 +13,7 @@
 
     // State for Variation B
     let builderState = {
-        currentStep: 1, // 1: Bread, 2: Patty, 3: Toppings, 4: Salads & Condiments
+        currentStep: 1, // 1: Bread, 2: Patty, 3: Toppings, 4: Salads & Condiments, 5: Combo
         bread: "sesame",
         patties: { "beef-patty": 1 }, // Default 1 beef patty (included/free)
         toppings: {},
@@ -350,6 +351,7 @@
         builderState.patties = { "beef-patty": 1 }; // Default 1 beef patty
         builderState.toppings = {};
         builderState.saladAndSauces = {};
+        builderState.combo = { isCombo: false, sideId: "fries", drinkId: "fountain-drink" };
 
         renderStep(1);
     };
@@ -367,6 +369,8 @@
             renderToppingsStep();
         } else if (stepNumber === 4) {
             renderSaladsStep();
+        } else if (stepNumber === 5) {
+            renderComboStep();
         }
     }
 
@@ -919,10 +923,7 @@
         });
 
         nextBtn?.addEventListener("click", () => {
-            let totalSalads = 0;
-            Object.values(builderState.saladAndSauces).forEach(q => totalSalads += q);
-
-            alert(`[Step 4 Confirmed]\nSalads & condiments chosen: ${totalSalads}.\nStep 5 (Combo & Final Review) will be added next!`);
+            renderStep(5);
         });
 
         listEl?.addEventListener("click", (e) => {
@@ -967,6 +968,294 @@
 
             const priceValEl = document.getElementById("var-b-price-val");
             if (priceValEl) priceValEl.textContent = `$${getCurrentPrice().toFixed(2)}`;
+        });
+    }
+
+    /**
+     * ==========================================================
+     * STEP 5: COMBO & REVIEW (FINAL STAGE)
+     * ==========================================================
+     */
+    function renderComboStep() {
+        const options = (window.burgerPricingEngine && window.burgerPricingEngine.options)
+            ? window.burgerPricingEngine.options
+            : FALLBACK_BUILDER_OPTIONS;
+
+        const comboOptions = options.combo || {
+            basePrice: 4.99,
+            sides: [
+                { id: "fries", name: "Fries", extraPrice: 0 },
+                { id: "poutine", name: "Poutine", extraPrice: 1.50 },
+                { id: "sweet-potato-fries", name: "Sweet Potato Fries", extraPrice: 0.75 },
+                { id: "onion-rings", name: "Onion Rings", extraPrice: 0.75 }
+            ],
+            drinks: [
+                { id: "fountain-drink", name: "Fountain Drink", extraPrice: 0 },
+                { id: "vanilla-milkshake", name: "Vanilla Milkshake", extraPrice: 1.50 },
+                { id: "strawberry-milkshake", name: "Strawberry Milkshake", extraPrice: 1.50 },
+                { id: "orange-juice", name: "Orange Juice", extraPrice: 0.50 }
+            ]
+        };
+
+        const sides = comboOptions.sides || [];
+        const drinks = comboOptions.drinks || [];
+        const currentPrice = getCurrentPrice();
+        const isCombo = Boolean(builderState.combo && builderState.combo.isCombo);
+
+        builderModalRoot.innerHTML = `
+            <div class="modal-overlay" id="var-b-overlay">
+                <div class="builder-modal var-b-modal" role="dialog" aria-modal="true" aria-labelledby="var-b-title">
+                    
+                    <div class="var-b-header">
+                        <div class="var-b-header-center">
+                            <h2 class="var-b-step-title" id="var-b-title">5 : COMBO</h2>
+                            ${renderStepperHtml(5)}
+                        </div>
+                        <button type="button" class="modal-close-btn var-b-close-btn" id="var-b-close" aria-label="Close builder">&times;</button>
+                    </div>
+
+                    <div class="var-b-body">
+                        <div class="var-b-stage">
+                            <div class="var-b-burger-preview" id="var-b-burger-preview">
+                                ${getCentralizedBurgerSvg()}
+                            </div>
+                            <div class="var-b-price-badge">
+                                <span class="var-b-price-label">Price:</span>
+                                <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <div class="var-b-combo-wrapper">
+                            <!-- Combo vs No Combo Toggle -->
+                            <div class="var-b-combo-toggle-wrapper">
+                                <span class="var-b-combo-toggle-label">Make it a Combo?</span>
+                                <div class="combo-solo-toggle var-b-combo-toggle" role="group" aria-label="Combo or Solo Selection">
+                                    <button type="button" class="toggle-mode-btn ${!isCombo ? "active" : ""}" id="var-b-toggle-solo">
+                                        No Combo (Solo)
+                                    </button>
+                                    <button type="button" class="toggle-mode-btn ${isCombo ? "active" : ""}" id="var-b-toggle-combo">
+                                        Make it a Combo (+$${(comboOptions.basePrice || 4.99).toFixed(2)})
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- No Combo Message -->
+                            <div class="var-b-no-combo-banner ${isCombo ? "hidden" : ""}" id="var-b-no-combo-msg">
+                                Solo burger selected. Switch to <strong>Make it a Combo</strong> above to add a side and drink.
+                            </div>
+
+                            <!-- Combo Sides & Drinks Options (Disappear if no combo is selected) -->
+                            <div class="var-b-combo-options ${isCombo ? "" : "hidden"}" id="var-b-combo-options">
+                                <!-- Sides Section -->
+                                <div class="var-b-combo-group">
+                                    <div class="var-b-combo-group-header">
+                                        <span class="var-b-combo-group-title">Choose Side</span>
+                                        <span class="var-b-combo-group-subtitle">Select 1 option</span>
+                                    </div>
+                                    <div class="var-b-combo-grid" id="var-b-sides-grid" role="radiogroup" aria-label="Choose a side">
+                                        ${sides.map(s => {
+                                            const isSelected = builderState.combo.sideId === s.id;
+                                            const extraText = (s.extraPrice && s.extraPrice > 0)
+                                                ? `+$${s.extraPrice.toFixed(2)}`
+                                                : "Included";
+                                            return `
+                                                <button type="button" 
+                                                        class="var-b-option-card var-b-side-card ${isSelected ? "active" : ""}" 
+                                                        data-side-id="${s.id}"
+                                                        role="radio"
+                                                        aria-checked="${isSelected}">
+                                                    <div class="card-radio-mark">${isSelected ? "✓" : ""}</div>
+                                                    <span class="card-option-name">${s.name}</span>
+                                                    <span class="card-option-sub">${extraText}</span>
+                                                </button>
+                                            `;
+                                        }).join("")}
+                                    </div>
+                                </div>
+
+                                <!-- Drinks Section -->
+                                <div class="var-b-combo-group">
+                                    <div class="var-b-combo-group-header">
+                                        <span class="var-b-combo-group-title">Choose Drink</span>
+                                        <span class="var-b-combo-group-subtitle">Select 1 option</span>
+                                    </div>
+                                    <div class="var-b-combo-grid" id="var-b-drinks-grid" role="radiogroup" aria-label="Choose a drink">
+                                        ${drinks.map(d => {
+                                            const isSelected = builderState.combo.drinkId === d.id;
+                                            const extraText = (d.extraPrice && d.extraPrice > 0)
+                                                ? `+$${d.extraPrice.toFixed(2)}`
+                                                : "Included";
+                                            return `
+                                                <button type="button" 
+                                                        class="var-b-option-card var-b-drink-card ${isSelected ? "active" : ""}" 
+                                                        data-drink-id="${d.id}"
+                                                        role="radio"
+                                                        aria-checked="${isSelected}">
+                                                    <div class="card-radio-mark">${isSelected ? "✓" : ""}</div>
+                                                    <span class="card-option-name">${d.name}</span>
+                                                    <span class="card-option-sub">${extraText}</span>
+                                                </button>
+                                            `;
+                                        }).join("")}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="var-b-footer var-b-footer-nav">
+                        <button type="button" class="var-b-back-btn" id="var-b-back">
+                            <span class="back-arrow">&#9664;</span> BACK
+                        </button>
+                        <button type="button" class="var-b-next-btn var-b-add-cart-btn" id="var-b-finish">
+                            ADD TO CART <span class="next-arrow">&#9654;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        setupComboEvents(options);
+    }
+
+    function setupComboEvents(options) {
+        const overlay = document.getElementById("var-b-overlay");
+        const closeBtn = document.getElementById("var-b-close");
+        const backBtn = document.getElementById("var-b-back");
+        const finishBtn = document.getElementById("var-b-finish");
+        const toggleSoloBtn = document.getElementById("var-b-toggle-solo");
+        const toggleComboBtn = document.getElementById("var-b-toggle-combo");
+        const comboOptionsEl = document.getElementById("var-b-combo-options");
+        const noComboMsgEl = document.getElementById("var-b-no-combo-msg");
+        const sidesGrid = document.getElementById("var-b-sides-grid");
+        const drinksGrid = document.getElementById("var-b-drinks-grid");
+        const priceValEl = document.getElementById("var-b-price-val");
+
+        closeBtn?.addEventListener("click", closeBuilder);
+        overlay?.addEventListener("click", (e) => {
+            if (e.target === overlay) closeBuilder();
+        });
+
+        backBtn?.addEventListener("click", () => {
+            renderStep(4);
+        });
+
+        // Toggle Solo / No Combo
+        toggleSoloBtn?.addEventListener("click", () => {
+            builderState.combo.isCombo = false;
+            toggleSoloBtn.classList.add("active");
+            toggleComboBtn.classList.remove("active");
+            comboOptionsEl?.classList.add("hidden");
+            noComboMsgEl?.classList.remove("hidden");
+            if (priceValEl) priceValEl.textContent = `$${getCurrentPrice().toFixed(2)}`;
+        });
+
+        // Toggle Make it a Combo
+        toggleComboBtn?.addEventListener("click", () => {
+            builderState.combo.isCombo = true;
+            toggleComboBtn.classList.add("active");
+            toggleSoloBtn.classList.remove("active");
+            comboOptionsEl?.classList.remove("hidden");
+            noComboMsgEl?.classList.add("hidden");
+            if (priceValEl) priceValEl.textContent = `$${getCurrentPrice().toFixed(2)}`;
+        });
+
+        // Sides selection
+        sidesGrid?.addEventListener("click", (e) => {
+            const card = e.target.closest(".var-b-side-card");
+            if (!card) return;
+
+            const sideId = card.dataset.sideId;
+            builderState.combo.sideId = sideId;
+
+            sidesGrid.querySelectorAll(".var-b-side-card").forEach(c => {
+                const isSelected = c.dataset.sideId === sideId;
+                c.classList.toggle("active", isSelected);
+                c.setAttribute("aria-checked", isSelected ? "true" : "false");
+                const mark = c.querySelector(".card-radio-mark");
+                if (mark) mark.textContent = isSelected ? "✓" : "";
+            });
+
+            if (priceValEl) priceValEl.textContent = `$${getCurrentPrice().toFixed(2)}`;
+        });
+
+        // Drinks selection
+        drinksGrid?.addEventListener("click", (e) => {
+            const card = e.target.closest(".var-b-drink-card");
+            if (!card) return;
+
+            const drinkId = card.dataset.drinkId;
+            builderState.combo.drinkId = drinkId;
+
+            drinksGrid.querySelectorAll(".var-b-drink-card").forEach(c => {
+                const isSelected = c.dataset.drinkId === drinkId;
+                c.classList.toggle("active", isSelected);
+                c.setAttribute("aria-checked", isSelected ? "true" : "false");
+                const mark = c.querySelector(".card-radio-mark");
+                if (mark) mark.textContent = isSelected ? "✓" : "";
+            });
+
+            if (priceValEl) priceValEl.textContent = `$${getCurrentPrice().toFixed(2)}`;
+        });
+
+        // Add to Cart
+        finishBtn?.addEventListener("click", () => {
+            const details = [];
+
+            // Bread summary
+            const breadObj = options.bread.options.find(b => b.id === builderState.bread);
+            if (breadObj) details.push(breadObj.name);
+
+            // Patties summary
+            Object.entries(builderState.patties).forEach(([pid, qty]) => {
+                const pObj = options.patty.options.find(p => p.id === pid);
+                if (pObj && qty > 0) details.push(`${qty > 1 ? qty + "x " : ""}${pObj.name}`);
+            });
+
+            // Toppings summary
+            Object.entries(builderState.toppings).forEach(([tid, qty]) => {
+                const tObj = options.toppings.options.find(t => t.id === tid);
+                if (tObj && qty > 0) details.push(`${qty > 1 ? qty + "x " : ""}${tObj.name}`);
+            });
+
+            // Salad & Sauces summary
+            Object.entries(builderState.saladAndSauces).forEach(([sid, qty]) => {
+                const sObj = options.saladAndSauces.options.find(s => s.id === sid);
+                if (sObj && qty > 0) details.push(`${qty > 1 ? qty + "x " : ""}${sObj.name}`);
+            });
+
+            // Combo summary
+            if (builderState.combo && builderState.combo.isCombo) {
+                const sideObj = options.combo.sides.find(s => s.id === builderState.combo.sideId);
+                const drinkObj = options.combo.drinks.find(d => d.id === builderState.combo.drinkId);
+                details.push(`Combo: ${sideObj ? sideObj.name : "Side"} + ${drinkObj ? drinkObj.name : "Drink"}`);
+            }
+
+            const currentPrice = getCurrentPrice();
+            const customItem = {
+                id: `custom-burger-${Date.now()}`,
+                name: (builderState.combo && builderState.combo.isCombo) ? "Custom Burger (Combo)" : "Custom Burger (Solo)",
+                description: details.join(", "),
+                price: currentPrice,
+                isCustom: true
+            };
+
+            // Add to cart state
+            if (typeof addToCart === "function") {
+                addToCart(customItem);
+            } else if (window.addToCart) {
+                window.addToCart(customItem);
+            }
+
+            closeBuilder();
+
+            // Open cart drawer
+            const cartDrawer = document.getElementById("cart-drawer");
+            const cartOverlay = document.getElementById("cart-drawer-overlay");
+            if (cartDrawer && cartOverlay) {
+                cartDrawer.classList.add("active");
+                cartOverlay.classList.add("active");
+            }
         });
     }
 

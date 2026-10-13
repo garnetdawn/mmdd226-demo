@@ -361,3 +361,58 @@ This document tracks all user prompts and the corresponding actions taken during
 - **Updated [styles.css](file:///d:/Github/mmdd226-demo/styles.css):**
   - Added medium-fidelity styling for Variation C (top tab buttons, centered stage, 3x2 grid, oval ADD button) and Variation D (split-panel layout, pill tabs, stepper cards).
 - **Updated [prompts.md](file:///d:/Github/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+---
+
+## Prompt 21
+> **User Prompt:**  
+> "On version B, add the final stage.  
+> It should have a toggle for combo or no combo, along the options of sides and drink."
+
+### Actions Taken:
+- **Implemented Step 5 (Combo & Final Stage) in [variation-b.js](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/variation-b.js):**
+  - Added the 5th wizard stage (`5 : COMBO`) with the fully completed 5-dot stepper indicator (`● — ● — ● — ● — ●`).
+  - Added interactive toggle between **No Combo (Solo)** and **Make it a Combo (+$4.99)**.
+  - Configured conditional visibility: when "No Combo" is selected, the sides and drinks options disappear, replaced by an informative wireframe notice; when "Make it a Combo" is selected, the side and drink selection grids immediately display.
+  - Rendered selectable radio cards for **Choose Side** (*Fries, Poutine +$1.50, Sweet Potato Fries +$0.75, Onion Rings +$0.75*) and **Choose Drink** (*Fountain Drink, Vanilla Milkshake +$1.50, Strawberry Milkshake +$1.50, Orange Juice +$0.50*) with checkmarks and real-time cost indicators.
+  - Linked the live price badge to dynamically recalculate subtotal including the combo base cost and any premium side/drink add-ons.
+  - Added two-way navigation: `◀ BACK` returns to Step 4 (Salads & Condiments) with all prior state intact.
+  - Added final action button `ADD TO CART ▶` that compiles the custom burger specifications (bread, patties, toppings, salads, and combo side + drink), invokes `addToCart()`, closes the wizard modal, and opens the cart drawer for seamless review.
+  - Updated Step 4 `NEXT ▶` button event listener to advance into Step 5 instead of displaying a placeholder alert.
+- **Updated styles in [styles.css](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/styles.css):**
+  - Added styling for the combo toggle banner, combo options container, side & drink 4-column responsive grid, radio checkmark states, no-combo placeholder notice, primary `ADD TO CART` button, and the `.hidden` utility class.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+---
+
+## Prompt 22
+> **User Prompt:**  
+> "put the feedback in a table in a .md file"
+
+### Actions Taken:
+- **Created [feedback.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/feedback.md):**
+  - Transcribed all feedback and scores from user evaluation sheets provided by Zoë George, Nina, and Regina Lugon Mendonça across Prototype Variations A, B, C, and D.
+  - Formatted into structured tables:
+    1. **Summary Table**: Overview by design variation with average scores and key takeaways.
+    2. **Detailed Feedback Table**: Individual reviewer scores and verbatim comments for each design.
+    3. **Side-by-Side Reviewer Matrix**: Cross-tabular comparison across reviewers and designs.
+    4. **Key Usability Insights**: Synthesis of user preferences and actionable prototype refinements.
+- **Created [feedback.html](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/feedback.html):** Companion print-ready HTML page with printable CSS (`@media print`) and button for PDF generation.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+---
+
+## Prompt 23
+> **User Prompt:**  
+> "anonymize the feedback."
+
+### Actions Taken:
+- **Updated [feedback.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/feedback.md):**
+  - Anonymized all reviewer identities across the document, replacing names with `Reviewer 1`, `Reviewer 2`, and `Reviewer 3`.
+  - Removed personally identifying metadata headers from the document top.
+- **Updated [feedback.html](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/feedback.html):**
+  - Updated all table rows and footer notes to use anonymous labels (`Reviewer 1`, `Reviewer 2`, `Reviewer 3`).
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+
+
