@@ -1,0 +1,109 @@
+{
+  "categories": [
+    { "id": "all", "name": "All Items" },
+    { "id": "custom", "name": "Build Your Own" },
+    { "id": "burgers", "name": "Signature Burgers" },
+    { "id": "sides", "name": "Sides & Appetizers" },
+    { "id": "drinks", "name": "Drinks & Shakes" },
+    { "id": "desserts", "name": "Desserts" }
+  ],
+  "items": [
+    {
+      "id": "byo-burger",
+      "name": "Build Your Own Burger",
+      "category": "custom",
+      "price": 10.99,
+      "description": "Choose your bun, patty, cheese, fresh toppings, and house sauces.",
+      "isCustomizable": true
+    },
+    {
+      "id": "classic-cheeseburger",
+      "name": "Classic Cheeseburger",
+      "category": "burgers",
+      "price": 11.49,
+      "description": "Angus beef patty, cheddar, lettuce, tomato, pickles, house sauce.",
+      "isCustomizable": false
+    },
+    {
+      "id": "bacon-bbq-burger",
+      "name": "Smoky Bacon BBQ Burger",
+      "category": "burgers",
+      "price": 13.99,
+      "description": "Double beef, smoked bacon, cheddar, crispy onion strings, BBQ sauce.",
+      "isCustomizable": false
+    },
+    {
+      "id": "mushroom-swiss-burger",
+      "name": "Mushroom Swiss Burger",
+      "category": "burgers",
+      "price": 12.99,
+      "description": "Garlic sautéed mushrooms, Swiss cheese, caramelized onions, aioli.",
+      "isCustomizable": false
+    },
+    {
+      "id": "spicy-smash-burger",
+      "name": "Spicy Pepper Jack Smash",
+      "category": "burgers",
+      "price": 12.49,
+      "description": "Smash patty, pepper jack, grilled jalapeños, chipotle mayo.",
+      "isCustomizable": false
+    },
+    {
+      "id": "veggie-delight-burger",
+      "name": "Garden Veggie Burger",
+      "category": "burgers",
+      "price": 11.99,
+      "description": "Black bean patty, avocado, arugula, pickled onions, herb sauce.",
+      "isCustomizable": false
+    },
+    {
+      "id": "crispy-fries",
+      "name": "Skin-On Crispy Fries",
+      "category": "sides",
+      "price": 4.49,
+      "description": "Fresh russet potato fries seasoned with sea salt.",
+      "isCustomizable": false
+    },
+    {
+      "id": "onion-rings",
+      "name": "Crispy Onion Rings",
+      "category": "sides",
+      "price": 5.99,
+      "description": "Thick-cut sweet onions battered and fried golden brown.",
+      "isCustomizable": false
+    },
+    {
+      "id": "sweet-potato-fries",
+      "name": "Sweet Potato Fries",
+      "category": "sides",
+      "price": 5.49,
+      "description": "Hand-cut sweet potatoes served with garlic dip.",
+      "isCustomizable": false
+    },
+    {
+      "id": "craft-soda",
+      "name": "Fountain Soda",
+      "category": "drinks",
+      "price": 2.99,
+      "description": "Refillable fountain soda (Cola, Lemon-Lime, Ginger Ale).",
+      "isCustomizable": false
+    },
+    {
+      "id": "handspun-shake",
+      "name": "Hand-Spun Milkshake",
+      "category": "drinks",
+      "price": 6.49,
+      "description": "Vanilla, Dutch Chocolate, or Fresh Strawberry shake.",
+      "isCustomizable": false
+    },
+    {
+      "id": "cookie-skillet",
+      "name": "Warm Chocolate Cookie",
+      "category": "desserts",
+      "price": 5.99,
+      "description": "Freshly baked warm cookie served with vanilla ice cream.",
+      "isCustomizable": false
+    }
+  ]
+}
+

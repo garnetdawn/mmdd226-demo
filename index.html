@@ -1,104 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burger Builder - Menu Prototype</title>
-    <link rel="stylesheet" href="styles.css?v=2">
-    <script src="builder-logic.js" defer></script>
-    <script src="variation-a.js" defer></script>
-    <script src="variation-b.js" defer></script>
-    <script src="variation-c.js" defer></script>
-    <script src="variation-d.js" defer></script>
-    <script src="script.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Menu</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Top Navigation Header -->
-    <header class="top-nav">
-        <div class="nav-left">
-            <a href="index.html" class="nav-logo" title="Return to Menu">LOGO</a>
-            <div class="order-toggle" id="order-mode-toggle" role="group" aria-label="Order Fulfillment Mode">
-                <button type="button" class="toggle-btn active" data-mode="pickup">Pickup</button>
-                <button type="button" class="toggle-btn" data-mode="delivery">Delivery</button>
-            </div>
-        </div>
-        <div class="nav-actions">
-            <button class="cart-btn" id="cart-btn" type="button" aria-label="Open cart">
-                <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-                <span class="cart-label">Cart</span>
-                <span class="cart-badge" id="cart-count">0</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Main Prototype Workspace Layout -->
-    <div class="layout-container">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <span class="sidebar-title">Categories</span>
-            </div>
-            <nav class="category-list" id="category-list">
-                <!-- Dynamically populated categories -->
-            </nav>
-        </aside>
-
-        <!-- Main Menu Cards Area -->
-        <main class="menu-main">
-            <div class="menu-header">
-                <h1 class="category-heading" id="current-category-name">All Items</h1>
-                <span class="category-count" id="category-item-count">12 items</span>
-            </div>
-
-            <!-- 4-Column Menu Grid -->
-            <div class="menu-grid" id="menu-grid">
-                <!-- Dynamically populated cards -->
-            </div>
-        </main>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-left">
+      <img src="images/hero-logo-1.png" alt="Logo" class="site-logo">
+      <div class="order-toggle">
+        <button class="toggle-btn active" type="button">Pickup</button>
+        <button class="toggle-btn" type="button">Delivery</button>
+      </div>
     </div>
+    <div class="header-right">
+      <button class="cart-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span>Cart</span>
+        <span class="cart-badge">0</span>
+      </button>
+    </div>
+  </header>
 
-    <!-- Quick Preview / Placeholder Cart Drawer for Prototype -->
-    <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
-    <aside class="cart-drawer" id="cart-drawer" aria-hidden="true">
-        <div class="cart-drawer-header">
-            <h3>Your Order</h3>
-            <button class="close-drawer-btn" id="close-cart-btn" aria-label="Close cart">&times;</button>
-        </div>
-        <div class="cart-drawer-body" id="cart-drawer-items">
-            <div class="empty-cart-state">
-                <div class="empty-cart-icon">🛒</div>
-                <p>Your cart is empty.</p>
-                <span>Select an item from the menu to get started.</span>
-            </div>
-        </div>
-        <div class="cart-drawer-footer">
-            <div class="cart-subtotal-row">
-                <span>Subtotal</span>
-                <span id="cart-subtotal">$0.00</span>
-            </div>
-            <a href="checkout.html" class="checkout-btn" id="checkout-btn">Proceed to Checkout</a>
-        </div>
+  <!-- Page Layout -->
+  <div class="page-container">
+    <!-- Categories Sidebar -->
+    <aside class="sidebar">
+      <h2 class="sidebar-heading">CATEGORIES</h2>
+      <ul class="category-list">
+        <li class="category-item active">
+          <span>All Items</span>
+          <span class="category-count">(12)</span>
+        </li>
+        <li class="category-item">
+          <span>Build Your Own</span>
+          <span class="category-count">(1)</span>
+        </li>
+        <li class="category-item">
+          <span>Signature Burgers</span>
+          <span class="category-count">(5)</span>
+        </li>
+        <li class="category-item">
+          <span>Sides & Appetizers</span>
+          <span class="category-count">(3)</span>
+        </li>
+        <li class="category-item">
+          <span>Drinks & Shakes</span>
+          <span class="category-count">(2)</span>
+        </li>
+        <li class="category-item">
+          <span>Desserts</span>
+          <span class="category-count">(1)</span>
+        </li>
+      </ul>
     </aside>
 
-    <!-- Builder Pop-up Modal Root Container -->
-    <div id="builder-modal-root"></div>
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="content-header">
+        <h1 class="content-title">All Items <span class="item-count">12 items</span></h1>
+      </div>
 
-    <!-- Prototype Variation Toggle Footer Bar -->
-    <footer class="variation-footer" id="variation-footer">
-        <div class="variation-footer-content">
-            <span class="variation-label">Builder Variation:</span>
-            <div class="variation-btn-group" role="group" aria-label="Builder Popup Variations">
-                <button type="button" class="variation-btn active" data-variation="A" aria-pressed="true">A</button>
-                <button type="button" class="variation-btn" data-variation="B" aria-pressed="false">B</button>
-                <button type="button" class="variation-btn" data-variation="C" aria-pressed="false">C</button>
-                <button type="button" class="variation-btn" data-variation="D" aria-pressed="false">D</button>
+      <!-- Menu Grid -->
+      <div class="menu-grid">
+        <!-- Item 1: Build Your Own Burger -->
+        <article class="menu-card">
+          <div class="card-image-wrapper">
+            <span class="customizable-badge">CUSTOMIZABLE</span>
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Build Your Own Burger</h3>
+            <p class="card-description">Choose your bun, patty, cheese, fresh toppings, and house sauces.</p>
+            <div class="card-footer">
+              <span class="card-price">$10.99</span>
+              <button class="card-btn btn-primary" type="button">Build Your Own</button>
             </div>
-        </div>
-    </footer>
+          </div>
+        </article>
+
+        <!-- Item 2: Classic Cheeseburger -->
+        <article class="menu-card">
+          <div class="card-image-wrapper">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Classic Cheeseburger</h3>
+            <p class="card-description">Angus beef patty, cheddar, lettuce, tomato, pickles, house sauce.</p>
+            <div class="card-footer">
+              <span class="card-price">$11.49</span>
+              <button class="card-btn btn-outline" type="button">Add to Cart</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Item 3: Smoky Bacon BBQ Burger -->
+        <article class="menu-card">
+          <div class="card-image-wrapper">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Smoky Bacon BBQ Burger</h3>
+            <p class="card-description">Double beef, smoked bacon, cheddar, crispy onion strings, BBQ sauce.</p>
+            <div class="card-footer">
+              <span class="card-price">$13.99</span>
+              <button class="card-btn btn-outline" type="button">Add to Cart</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Item 4: Mushroom Swiss Burger -->
+        <article class="menu-card">
+          <div class="card-image-wrapper">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Mushroom Swiss Burger</h3>
+            <p class="card-description">Garlic sautéed mushrooms, Swiss cheese, caramelized onions, aioli.</p>
+            <div class="card-footer">
+              <span class="card-price">$12.99</span>
+              <button class="card-btn btn-outline" type="button">Add to Cart</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Item 5: Spicy Pepper Jack Smash -->
+        <article class="menu-card">
+          <div class="card-image-wrapper">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Spicy Pepper Jack Smash</h3>
+            <p class="card-description">Smash patty, pepper jack, grilled jalapeños, chipotle mayo.</p>
+            <div class="card-footer">
+              <span class="card-price">$12.49</span>
+              <button class="card-btn btn-outline" type="button">Add to Cart</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Item 6: Garden Veggie Burger -->
+        <article class="menu-card">
+          <div class="card-image-wrapper">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Garden Veggie Burger</h3>
+            <p class="card-description">Black bean patty, avocado, arugula, pickled onions, herb sauce.</p>
+            <div class="card-footer">
+              <span class="card-price">$11.99</span>
+              <button class="card-btn btn-outline" type="button">Add to Cart</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Item 7: Skin-On Crispy Fries -->
+        <article class="menu-card">
+          <div class="card-image-wrapper">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Skin-On Crispy Fries</h3>
+            <p class="card-description">Fresh russet potato fries seasoned with sea salt.</p>
+            <div class="card-footer">
+              <span class="card-price">$4.49</span>
+              <button class="card-btn btn-outline" type="button">Add to Cart</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Item 8: Crispy Onion Rings -->
+        <article class="menu-card">
+          <div class="card-image-wrapper">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Crispy Onion Rings</h3>
+            <p class="card-description">Thick-cut sweet onions battered and fried golden brown.</p>
+            <div class="card-footer">
+              <span class="card-price">$5.99</span>
+              <button class="card-btn btn-outline" type="button">Add to Cart</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
