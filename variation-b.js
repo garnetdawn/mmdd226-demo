@@ -4,8 +4,9 @@
  * Step 1: BREAD (Select 1 required)
  * Step 2: PATTY (Counter steppers with - and +, 1st free, extra +$4.70 each)
  * Step 3: TOPPINGS (Counter steppers with - and +, +$1.29 each)
- * Step 4: SALADS & CONDIMENTS (Counter steppers with - and +, first 6 free, extra +$0.50 each)
- * Step 5: COMBO (Toggle combo or no combo, select side and drink)
+ * Step 4: SALADS (Counter steppers with - and +, first 6 free, extra +$0.50 each)
+ * Step 5: SAUCES (Counter steppers with - and +, first 6 free, extra +$0.50 each)
+ * Step 6: COMBO (Toggle combo or no combo, select side and drink)
  */
 
 (function () {
@@ -13,11 +14,12 @@
 
     // State for Variation B
     let builderState = {
-        currentStep: 1, // 1: Bread, 2: Patty, 3: Toppings, 4: Salads & Condiments, 5: Combo
+        currentStep: 1, // 1: Bread, 2: Patty, 3: Toppings, 4: Salads, 5: Sauces, 6: Combo
         bread: "sesame",
-        patties: { "beef-patty": 1 }, // Default 1 beef patty (included/free)
+        patties: {}, 
         toppings: {},
-        saladAndSauces: {},
+        salads: {},
+        sauces: {},
         combo: { isCombo: false, sideId: "fries", drinkId: "fountain-drink" },
         baseItem: null
     };
@@ -153,7 +155,7 @@
         // 1. Sauces (if any selected)
         const sauceList = ["mustard", "mayo", "bbq", "chipotle"];
         sauceList.forEach(sId => {
-            const count = builderState.saladAndSauces[sId] || 0;
+            const count = (builderState.sauces && builderState.sauces[sId]) || (builderState.saladAndSauces && builderState.saladAndSauces[sId]) || 0;
             if (count > 0) {
                 totalFillings++;
                 layersHtml += `
@@ -167,8 +169,10 @@
         });
 
         // 2. Veggies (Tomato, Pickle, Red Onion, Jalapeño)
-        if (builderState.saladAndSauces["tomato"] > 0) {
-            for (let i = 0; i < Math.min(builderState.saladAndSauces["tomato"], 3); i++) {
+        const getSaladQty = (id) => (builderState.salads && builderState.salads[id]) || (builderState.saladAndSauces && builderState.saladAndSauces[id]) || 0;
+
+        if (getSaladQty("tomato") > 0) {
+            for (let i = 0; i < Math.min(getSaladQty("tomato"), 3); i++) {
                 totalFillings++;
                 layersHtml += `
                     <div class="var-b-layer var-b-layer-tomato" title="Tomato">
@@ -183,7 +187,7 @@
             }
         }
 
-        if (builderState.saladAndSauces["pickle"] > 0) {
+        if (getSaladQty("pickle") > 0) {
             totalFillings++;
             layersHtml += `
                 <div class="var-b-layer var-b-layer-pickle" title="Pickles">
@@ -195,7 +199,7 @@
             `;
         }
 
-        if (builderState.saladAndSauces["red-onion"] > 0) {
+        if (getSaladQty("red-onion") > 0) {
             totalFillings++;
             layersHtml += `
                 <div class="var-b-layer var-b-layer-onion" title="Red Onion">
@@ -207,7 +211,7 @@
             `;
         }
 
-        if (builderState.saladAndSauces["jalapeno"] > 0) {
+        if (getSaladQty("jalapeno") > 0) {
             totalFillings++;
             layersHtml += `
                 <div class="var-b-layer var-b-layer-jalapeno" title="Jalapeño">
@@ -284,7 +288,7 @@
         });
 
         // 5. Lettuce (base bed under patties)
-        if (builderState.saladAndSauces["lettuce"] > 0) {
+        if (getSaladQty("lettuce") > 0) {
             totalFillings++;
             layersHtml += `
                 <div class="var-b-layer var-b-layer-lettuce" title="Lettuce">
@@ -350,7 +354,8 @@
         builderState.bread = "sesame";
         builderState.patties = { "beef-patty": 1 }; // Default 1 beef patty
         builderState.toppings = {};
-        builderState.saladAndSauces = {};
+        builderState.salads = {};
+        builderState.sauces = {};
         builderState.combo = { isCombo: false, sideId: "fries", drinkId: "fountain-drink" };
 
         renderStep(1);
@@ -370,16 +375,18 @@
         } else if (stepNumber === 4) {
             renderSaladsStep();
         } else if (stepNumber === 5) {
+            renderSaucesStep();
+        } else if (stepNumber === 6) {
             renderComboStep();
         }
     }
 
     /**
-     * Helper to render the Stepper component for steps 1 through 5
+     * Helper to render the Stepper component for steps 1 through 6
      */
     function renderStepperHtml(activeStep) {
         let dots = "";
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= 6; i++) {
             let dotClass = "stepper-dot";
             if (i < activeStep) {
                 dotClass += " completed";
@@ -388,13 +395,13 @@
             }
 
             dots += `<span class="${dotClass}" title="Step ${i}"></span>`;
-            if (i < 5) {
+            if (i < 6) {
                 const lineClass = i < activeStep ? "stepper-line active" : "stepper-line";
                 dots += `<span class="${lineClass}"></span>`;
             }
         }
         return `
-            <div class="var-b-stepper" role="progressbar" aria-valuenow="${activeStep}" aria-valuemin="1" aria-valuemax="5" aria-label="Step progress">
+            <div class="var-b-stepper" role="progressbar" aria-valuenow="${activeStep}" aria-valuemin="1" aria-valuemax="6" aria-label="Step progress">
                 ${dots}
             </div>
         `;
@@ -810,7 +817,7 @@
 
     /**
      * ==========================================================
-     * STEP 4: SALADS & CONDIMENTS
+     * STEP 4: SALADS
      * ==========================================================
      */
     function renderSaladsStep() {
@@ -818,7 +825,7 @@
             ? window.burgerPricingEngine.options
             : FALLBACK_BUILDER_OPTIONS;
 
-        const saladOptions = options.saladAndSauces.options;
+        const saladOptions = (options.salads && options.salads.options) ? options.salads.options : [];
         const currentPrice = getCurrentPrice();
 
         builderModalRoot.innerHTML = `
@@ -827,7 +834,7 @@
                     
                     <div class="var-b-header">
                         <div class="var-b-header-center">
-                            <h2 class="var-b-step-title" id="var-b-title">4 : SALADS & CONDIMENTS</h2>
+                            <h2 class="var-b-step-title" id="var-b-title">4 : SALADS</h2>
                             ${renderStepperHtml(4)}
                         </div>
                         <button type="button" class="modal-close-btn var-b-close-btn" id="var-b-close" aria-label="Close builder">&times;</button>
@@ -844,12 +851,12 @@
                             </div>
                         </div>
 
-                        <div class="var-b-item-list" role="group" aria-label="Choose salads and condiments">
+                        <div class="var-b-item-list" role="group" aria-label="Choose fresh salads">
                             <div class="patty-hint-banner">
                                 <span id="salads-status-banner">${getSaladsStatusText()}</span>
                             </div>
                             ${saladOptions.map(s => {
-                                const qty = builderState.saladAndSauces[s.id] || 0;
+                                const qty = (builderState.salads && builderState.salads[s.id]) || 0;
                                 const hasSelection = qty > 0;
                                 return `
                                     <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${s.id}">
@@ -860,7 +867,7 @@
                                         <div class="var-b-stepper-ctrl">
                                             <button type="button" 
                                                     class="var-b-step-btn btn-minus" 
-                                                    data-type="saladAndSauces"
+                                                    data-type="salads"
                                                     data-id="${s.id}" 
                                                     aria-label="Decrease ${s.name}" 
                                                     ${qty === 0 ? "disabled" : ""}>
@@ -869,7 +876,7 @@
                                             <span class="var-b-step-qty" id="qty-salads-${s.id}">${qty}</span>
                                             <button type="button" 
                                                     class="var-b-step-btn btn-plus" 
-                                                    data-type="saladAndSauces"
+                                                    data-type="salads"
                                                     data-id="${s.id}" 
                                                     aria-label="Increase ${s.name}">
                                                 &#43;
@@ -898,12 +905,14 @@
 
     function getSaladsStatusText() {
         let total = 0;
-        Object.values(builderState.saladAndSauces).forEach(q => total += q);
+        if (builderState.salads) {
+            Object.values(builderState.salads).forEach(q => total += q);
+        }
         if (total <= 6) {
-            return `* First 6 items are <strong>FREE</strong> (${total}/6 selected). Extra items are <strong>+$0.50</strong> each.`;
+            return `* First 6 salads are <strong>FREE</strong> (${total}/6 selected). Extra items are <strong>+$0.50</strong> each.`;
         }
         const extra = total - 6;
-        return `* First 6 items free. ${extra} extra selected (<strong>+$${(extra * 0.50).toFixed(2)}</strong>).`;
+        return `* First 6 salads free. ${extra} extra selected (<strong>+$${(extra * 0.50).toFixed(2)}</strong>).`;
     }
 
     function setupSaladsEvents() {
@@ -932,7 +941,8 @@
 
             const sid = btn.dataset.id;
             const isPlus = btn.classList.contains("btn-plus");
-            let qty = builderState.saladAndSauces[sid] || 0;
+            if (!builderState.salads) builderState.salads = {};
+            let qty = builderState.salads[sid] || 0;
 
             if (isPlus) {
                 qty += 1;
@@ -941,9 +951,9 @@
             }
 
             if (qty === 0) {
-                delete builderState.saladAndSauces[sid];
+                delete builderState.salads[sid];
             } else {
-                builderState.saladAndSauces[sid] = qty;
+                builderState.salads[sid] = qty;
             }
 
             const qtyEl = document.getElementById(`qty-salads-${sid}`);
@@ -973,7 +983,173 @@
 
     /**
      * ==========================================================
-     * STEP 5: COMBO & REVIEW (FINAL STAGE)
+     * STEP 5: SAUCES
+     * ==========================================================
+     */
+    function renderSaucesStep() {
+        const options = (window.burgerPricingEngine && window.burgerPricingEngine.options)
+            ? window.burgerPricingEngine.options
+            : FALLBACK_BUILDER_OPTIONS;
+
+        const sauceOptions = (options.sauces && options.sauces.options) ? options.sauces.options : [];
+        const currentPrice = getCurrentPrice();
+
+        builderModalRoot.innerHTML = `
+            <div class="modal-overlay" id="var-b-overlay">
+                <div class="builder-modal var-b-modal" role="dialog" aria-modal="true" aria-labelledby="var-b-title">
+                    
+                    <div class="var-b-header">
+                        <div class="var-b-header-center">
+                            <h2 class="var-b-step-title" id="var-b-title">5 : SAUCES</h2>
+                            ${renderStepperHtml(5)}
+                        </div>
+                        <button type="button" class="modal-close-btn var-b-close-btn" id="var-b-close" aria-label="Close builder">&times;</button>
+                    </div>
+
+                    <div class="var-b-body">
+                        <div class="var-b-stage">
+                            <div class="var-b-burger-preview" id="var-b-burger-preview">
+                                ${getCentralizedBurgerSvg()}
+                            </div>
+                            <div class="var-b-price-badge">
+                                <span class="var-b-price-label">Price:</span>
+                                <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <div class="var-b-item-list" role="group" aria-label="Choose sauces and condiments">
+                            <div class="patty-hint-banner">
+                                <span id="sauces-status-banner">${getSaucesStatusText()}</span>
+                            </div>
+                            ${sauceOptions.map(s => {
+                                const qty = (builderState.sauces && builderState.sauces[s.id]) || 0;
+                                const hasSelection = qty > 0;
+                                return `
+                                    <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${s.id}">
+                                        <div class="var-b-item-info">
+                                            <span class="var-b-item-name">${s.name}</span>
+                                            <span class="var-b-item-pricing-note">${qty > 0 ? `${qty} selected` : "First 6 free"}</span>
+                                        </div>
+                                        <div class="var-b-stepper-ctrl">
+                                            <button type="button" 
+                                                    class="var-b-step-btn btn-minus" 
+                                                    data-type="sauces"
+                                                    data-id="${s.id}" 
+                                                    aria-label="Decrease ${s.name}" 
+                                                    ${qty === 0 ? "disabled" : ""}>
+                                                &minus;
+                                            </button>
+                                            <span class="var-b-step-qty" id="qty-sauces-${s.id}">${qty}</span>
+                                            <button type="button" 
+                                                    class="var-b-step-btn btn-plus" 
+                                                    data-type="sauces"
+                                                    data-id="${s.id}" 
+                                                    aria-label="Increase ${s.name}">
+                                                &#43;
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join("")}
+                        </div>
+                    </div>
+
+                    <div class="var-b-footer var-b-footer-nav">
+                        <button type="button" class="var-b-back-btn" id="var-b-back">
+                            <span class="back-arrow">&#9664;</span> BACK
+                        </button>
+                        <button type="button" class="var-b-next-btn" id="var-b-next">
+                            NEXT <span class="next-arrow">&#9654;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        setupSaucesEvents();
+    }
+
+    function getSaucesStatusText() {
+        let total = 0;
+        if (builderState.sauces) {
+            Object.values(builderState.sauces).forEach(q => total += q);
+        }
+        if (total <= 6) {
+            return `* First 6 sauces are <strong>FREE</strong> (${total}/6 selected). Extra items are <strong>+$0.50</strong> each.`;
+        }
+        const extra = total - 6;
+        return `* First 6 sauces free. ${extra} extra selected (<strong>+$${(extra * 0.50).toFixed(2)}</strong>).`;
+    }
+
+    function setupSaucesEvents() {
+        const overlay = document.getElementById("var-b-overlay");
+        const closeBtn = document.getElementById("var-b-close");
+        const backBtn = document.getElementById("var-b-back");
+        const nextBtn = document.getElementById("var-b-next");
+        const listEl = document.querySelector(".var-b-item-list");
+
+        closeBtn?.addEventListener("click", closeBuilder);
+        overlay?.addEventListener("click", (e) => {
+            if (e.target === overlay) closeBuilder();
+        });
+
+        backBtn?.addEventListener("click", () => {
+            renderStep(4);
+        });
+
+        nextBtn?.addEventListener("click", () => {
+            renderStep(6);
+        });
+
+        listEl?.addEventListener("click", (e) => {
+            const btn = e.target.closest(".var-b-step-btn");
+            if (!btn) return;
+
+            const sid = btn.dataset.id;
+            const isPlus = btn.classList.contains("btn-plus");
+            if (!builderState.sauces) builderState.sauces = {};
+            let qty = builderState.sauces[sid] || 0;
+
+            if (isPlus) {
+                qty += 1;
+            } else {
+                qty = Math.max(0, qty - 1);
+            }
+
+            if (qty === 0) {
+                delete builderState.sauces[sid];
+            } else {
+                builderState.sauces[sid] = qty;
+            }
+
+            const qtyEl = document.getElementById(`qty-sauces-${sid}`);
+            if (qtyEl) qtyEl.textContent = qty;
+
+            const row = btn.closest(".var-b-item-row");
+            const minusBtn = row.querySelector(".btn-minus");
+            if (minusBtn) minusBtn.disabled = qty === 0;
+
+            row.classList.toggle("has-qty", qty > 0);
+
+            const noteEl = row.querySelector(".var-b-item-pricing-note");
+            if (noteEl) {
+                noteEl.textContent = qty > 0 ? `${qty} selected` : "First 6 free";
+            }
+
+            const bannerEl = document.getElementById("sauces-status-banner");
+            if (bannerEl) bannerEl.innerHTML = getSaucesStatusText();
+
+            const previewEl = document.getElementById("var-b-burger-preview");
+            if (previewEl) previewEl.innerHTML = getCentralizedBurgerSvg();
+
+            const priceValEl = document.getElementById("var-b-price-val");
+            if (priceValEl) priceValEl.textContent = `$${getCurrentPrice().toFixed(2)}`;
+        });
+    }
+
+    /**
+     * ==========================================================
+     * STEP 6: COMBO & REVIEW (FINAL STAGE)
      * ==========================================================
      */
     function renderComboStep() {
@@ -1008,8 +1184,8 @@
                     
                     <div class="var-b-header">
                         <div class="var-b-header-center">
-                            <h2 class="var-b-step-title" id="var-b-title">5 : COMBO</h2>
-                            ${renderStepperHtml(5)}
+                            <h2 class="var-b-step-title" id="var-b-title">6 : COMBO</h2>
+                            ${renderStepperHtml(6)}
                         </div>
                         <button type="button" class="modal-close-btn var-b-close-btn" id="var-b-close" aria-label="Close builder">&times;</button>
                     </div>
@@ -1137,7 +1313,7 @@
         });
 
         backBtn?.addEventListener("click", () => {
-            renderStep(4);
+            renderStep(5);
         });
 
         // Toggle Solo / No Combo
@@ -1218,11 +1394,29 @@
                 if (tObj && qty > 0) details.push(`${qty > 1 ? qty + "x " : ""}${tObj.name}`);
             });
 
-            // Salad & Sauces summary
-            Object.entries(builderState.saladAndSauces).forEach(([sid, qty]) => {
-                const sObj = options.saladAndSauces.options.find(s => s.id === sid);
-                if (sObj && qty > 0) details.push(`${qty > 1 ? qty + "x " : ""}${sObj.name}`);
-            });
+            // Salads summary
+            if (options.salads && options.salads.options && builderState.salads) {
+                Object.entries(builderState.salads).forEach(([sid, qty]) => {
+                    const sObj = options.salads.options.find(s => s.id === sid);
+                    if (sObj && qty > 0) details.push(`${qty > 1 ? qty + "x " : ""}${sObj.name}`);
+                });
+            }
+
+            // Sauces summary
+            if (options.sauces && options.sauces.options && builderState.sauces) {
+                Object.entries(builderState.sauces).forEach(([sid, qty]) => {
+                    const sObj = options.sauces.options.find(s => s.id === sid);
+                    if (sObj && qty > 0) details.push(`${qty > 1 ? qty + "x " : ""}${sObj.name}`);
+                });
+            }
+
+            // Legacy Salad & Sauces summary if present
+            if (builderState.saladAndSauces && options.saladAndSauces && options.saladAndSauces.options) {
+                Object.entries(builderState.saladAndSauces).forEach(([sid, qty]) => {
+                    const sObj = options.saladAndSauces.options.find(s => s.id === sid);
+                    if (sObj && qty > 0) details.push(`${qty > 1 ? qty + "x " : ""}${sObj.name}`);
+                });
+            }
 
             // Combo summary
             if (builderState.combo && builderState.combo.isCombo) {

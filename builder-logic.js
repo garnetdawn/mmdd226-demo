@@ -46,21 +46,29 @@ const FALLBACK_BUILDER_OPTIONS = {
             { id: "mushrooms", name: "Mushrooms" }
         ]
     },
-    saladAndSauces: {
+    salads: {
         freeCount: 6,
         extraPrice: 0.50,
         allowMultiple: true,
-        description: "First 6 are free, extra are +$0.50 each. Can add multiple of the same option.",
+        description: "Fresh salad toppings. First 6 are free, extra are +$0.50 each.",
         options: [
             { id: "pickle", name: "Pickle" },
             { id: "lettuce", name: "Lettuce" },
             { id: "tomato", name: "Tomato" },
+            { id: "red-onion", name: "Red Onion" },
+            { id: "jalapeno", name: "Jalapeno" }
+        ]
+    },
+    sauces: {
+        freeCount: 6,
+        extraPrice: 0.50,
+        allowMultiple: true,
+        description: "Sauces and condiments. First 6 are free, extra are +$0.50 each.",
+        options: [
             { id: "mustard", name: "Mustard" },
             { id: "mayo", name: "Mayo" },
             { id: "bbq", name: "BBQ" },
-            { id: "chipotle", name: "Chipotle" },
-            { id: "red-onion", name: "Red Onion" },
-            { id: "jalapeno", name: "Jalapeno" }
+            { id: "chipotle", name: "Chipotle" }
         ]
     },
     combo: {
@@ -129,17 +137,43 @@ class BurgerPricingEngine {
         }
         const toppingsCost = totalToppings * (this.options.toppings.pricePerItem || 1.29);
 
-        // 3. Salad & Sauces
-        let totalSaladSauces = 0;
-        if (selection.saladAndSauces) {
-            Object.values(selection.saladAndSauces).forEach((qty) => {
-                totalSaladSauces += Number(qty) || 0;
+        // 3. Salads
+        let totalSalads = 0;
+        if (selection.salads) {
+            Object.values(selection.salads).forEach((qty) => {
+                totalSalads += Number(qty) || 0;
             });
         }
-        const extraSaladSauces = Math.max(0, totalSaladSauces - (this.options.saladAndSauces.freeCount || 6));
-        const saladSaucesCost = extraSaladSauces * (this.options.saladAndSauces.extraPrice || 0.50);
+        const saladsFree = (this.options.salads && this.options.salads.freeCount !== undefined) ? this.options.salads.freeCount : 6;
+        const saladsExtraPrice = (this.options.salads && this.options.salads.extraPrice !== undefined) ? this.options.salads.extraPrice : 0.50;
+        const extraSalads = Math.max(0, totalSalads - saladsFree);
+        const saladsCost = extraSalads * saladsExtraPrice;
 
-        // 4. Combo
+        // 4. Sauces
+        let totalSauces = 0;
+        if (selection.sauces) {
+            Object.values(selection.sauces).forEach((qty) => {
+                totalSauces += Number(qty) || 0;
+            });
+        }
+        const saucesFree = (this.options.sauces && this.options.sauces.freeCount !== undefined) ? this.options.sauces.freeCount : 6;
+        const saucesExtraPrice = (this.options.sauces && this.options.sauces.extraPrice !== undefined) ? this.options.sauces.extraPrice : 0.50;
+        const extraSauces = Math.max(0, totalSauces - saucesFree);
+        const saucesCost = extraSauces * saucesExtraPrice;
+
+        // Legacy compatibility if saladAndSauces is provided
+        let legacySaladSauceCost = 0;
+        let totalSaladSauces = totalSalads + totalSauces;
+        if (selection.saladAndSauces && !selection.salads && !selection.sauces) {
+            let legacyTotal = 0;
+            Object.values(selection.saladAndSauces).forEach((qty) => {
+                legacyTotal += Number(qty) || 0;
+            });
+            totalSaladSauces = legacyTotal;
+            legacySaladSauceCost = Math.max(0, legacyTotal - 6) * 0.50;
+        }
+
+        // 5. Combo
         let comboCost = 0;
         if (selection.combo && selection.combo.isCombo) {
             comboCost += (this.options.combo.basePrice || 4.99);
@@ -155,7 +189,7 @@ class BurgerPricingEngine {
             }
         }
 
-        const totalPrice = base + pattiesCost + toppingsCost + saladSaucesCost + comboCost;
+        const totalPrice = base + pattiesCost + toppingsCost + saladsCost + saucesCost + legacySaladSauceCost + comboCost;
 
         return {
             basePrice: base,
@@ -164,9 +198,15 @@ class BurgerPricingEngine {
             pattiesCost,
             totalToppings,
             toppingsCost,
+            totalSalads,
+            extraSalads,
+            saladsCost,
+            totalSauces,
+            extraSauces,
+            saucesCost,
             totalSaladSauces,
-            extraSaladSauces,
-            saladSaucesCost,
+            extraSaladSauces: extraSalads + extraSauces,
+            saladSaucesCost: saladsCost + saucesCost + legacySaladSauceCost,
             comboCost,
             totalPrice: Number(totalPrice.toFixed(2))
         };
@@ -180,7 +220,8 @@ class BurgerPricingEngine {
             bread: "sesame",
             patties: { "beef-patty": 1 },
             toppings: {},
-            saladAndSauces: {},
+            salads: {},
+            sauces: {},
             combo: {
                 isCombo: false,
                 sideId: "fries",
