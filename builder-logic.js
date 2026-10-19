@@ -10,11 +10,11 @@ const FALLBACK_BUILDER_OPTIONS = {
         maxSelect: 1,
         description: "Required choice. Can select only one.",
         options: [
-            { id: "sesame", name: "Sesame Seed", price: 0 },
-            { id: "gluten-free", name: "Gluten Free", price: 0 },
-            { id: "multigrain", name: "Multigrain", price: 0 },
-            { id: "potato-bun", name: "Potato Bun", price: 0 },
-            { id: "ciabatta", name: "Ciabatta", price: 0 }
+            { id: "sesame", name: "Sesame Seed Bun", price: 0, imageTop: "images/bun-top-sesame.png", imageBottom: "images/bun-bottom-sesame.png" },
+            { id: "gluten-free", name: "Gluten Free Bun", price: 0, imageTop: "images/bun-top-gluten-free.png", imageBottom: "images/bun-bottom-gluten-free.png" },
+            { id: "multigrain", name: "Multigrain Bun", price: 0, imageTop: "images/bun-top-multigrain.png", imageBottom: "images/bun-bottom-multigrain.png" },
+            { id: "potato-bun", name: "Potato Bun", price: 0, imageTop: "images/bun-top-potato-bun.png", imageBottom: "images/bun-bottom-potato-bun.png" },
+            { id: "ciabatta", name: "Ciabatta", price: 0, imageTop: "images/bun-top-ciabatta.png", imageBottom: "images/bun-bottom-ciabatta.png" }
         ]
     },
     patty: {
@@ -23,11 +23,13 @@ const FALLBACK_BUILDER_OPTIONS = {
         allowMultiple: true,
         description: "First 1 is free, extra patties are +$4.70 each. Can add multiple of the same option.",
         options: [
-            { id: "beef-patty", name: "Angus Beef Patty" },
-            { id: "smash-patty", name: "Crispy Smash Patty" },
-            { id: "chicken-patty", name: "Crispy Chicken Patty" },
-            { id: "veggie-patty", name: "Black Bean Veggie Patty" },
-            { id: "beyond-patty", name: "Plant-Based Beyond Patty" }
+            { id: "beef-patty-4", name: "4oz Beef Patty", image: "images/patty-beef-4.png" },
+            { id: "beef-patty-6", name: "6oz Beef Patty", image: "images/patty-beef-6.png" },
+            { id: "beef-patty-8", name: "8oz Beef Patty", image: "images/patty-beef-8.png" },
+            { id: "grilled-chicken-patty", name: "Crispy Smash Patty", image: "images/patty-grilled-chicken.png" },
+            { id: "crispy-chicken-patty", name: "Crispy Chicken Patty", image: "images/patty-crispy-chicken.png" },
+            { id: "veggie-beef-patty", name: "Plant-based Beef Patty", image: "images/patty-veggie-beef.png" },
+            { id: "veggie-chicken-patty", name: "Plant-Based Crispy Chicken Patty", image: "images/patty-veggie-chicken.png" }
         ]
     },
     toppings: {
@@ -35,40 +37,46 @@ const FALLBACK_BUILDER_OPTIONS = {
         allowMultiple: true,
         description: "Each topping is +$1.29 each. Can add multiple of the same option.",
         options: [
-            { id: "cheddar", name: "Cheddar" },
-            { id: "smoked-cheddar", name: "Smoked Cheddar" },
-            { id: "blue-cheese", name: "Blue Cheese" },
-            { id: "crispy-onions", name: "Crispy Onions" },
-            { id: "fried-egg", name: "Fried Egg" },
-            { id: "guacamole", name: "Guacamole" },
-            { id: "beef-bacon", name: "Beef Bacon" },
-            { id: "strip-bacon", name: "Strip Bacon" },
-            { id: "mushrooms", name: "Mushrooms" }
+            { id: "cheddar", name: "Cheddar", image: "images/topping-cheddar.png" },
+            { id: "smoked-cheddar", name: "Smoked Cheddar", image: "images/topping-smoked-cheddar.png" },
+            { id: "blue-cheese", name: "Blue Cheese", image: "images/topping-blue-cheese.png" },
+            { id: "crispy-onions", name: "Crispy Onions", image: "images/topping-crispy-onions.png" },
+            { id: "fried-egg", name: "Fried Egg", image: "images/topping-fried-egg.png" },
+            { id: "guacamole", name: "Guacamole", image: "images/topping-guacamole.png" },
+            { id: "beef-bacon", name: "Beef Bacon", image: "images/topping-beef-bacon.png" },
+            { id: "strip-bacon", name: "Strip Bacon", image: "images/topping-strip-bacon.png" },
+            { id: "mushrooms", name: "Mushrooms", image: "images/topping-mushrooms.png" }
         ]
     },
     salads: {
-        freeCount: 6,
+        freeCount: 4,
         extraPrice: 0.50,
         allowMultiple: true,
         description: "Fresh salad toppings. First 6 are free, extra are +$0.50 each.",
         options: [
-            { id: "pickle", name: "Pickle" },
-            { id: "lettuce", name: "Lettuce" },
-            { id: "tomato", name: "Tomato" },
-            { id: "red-onion", name: "Red Onion" },
-            { id: "jalapeno", name: "Jalapeno" }
+            { id: "pickle", name: "Pickle", image: "images/salad-pickle.png" },
+            { id: "lettuce", name: "Lettuce", image: "images/salad-lettuce.png" },
+            { id: "tomato", name: "Tomato", image: "images/salad-tomato.png" },
+            { id: "red-onion", name: "Red Onion", image: "images/salad-red-onion.png" },
+            { id: "jalapeno", name: "Jalapeno", image: "images/salad-jalapeno.png" }
         ]
     },
     sauces: {
-        freeCount: 6,
+        freeCount: 2,
         extraPrice: 0.50,
         allowMultiple: true,
         description: "Sauces and condiments. First 6 are free, extra are +$0.50 each.",
         options: [
-            { id: "mustard", name: "Mustard" },
-            { id: "mayo", name: "Mayo" },
-            { id: "bbq", name: "BBQ" },
-            { id: "chipotle", name: "Chipotle" }
+            { id: "mustard", name: "Mustard", image: "images/sauce-mustard.png" },
+            { id: "mayo", name: "Mayo", image: "images/sauce-mayo.png" },
+            { id: "bbq", name: "BBQ", image: "images/sauce-bbq.png" },
+            { id: "relish", name: "Relish", image: "images/sauce-relish.png" },
+            { id: "mango-sauce", name: "Mango sauce", image: "images/sauce-mango-sauce.png" },
+            { id: "mango-pineapple-sauce", name: "Mando pineapple sauce", image: "images/sauce-mango-pineapple-sauce.png" },
+            { id: "honey-dijon", name: "Honey Dijon", image: "images/sauce-honey-dijon.png" },
+            { id: "hot-sauce", name: "Hot Sauce", image: "images/sauce-hot-sauce.png" },
+            { id: "ancho-chipotle", name: "Ancho Chipotle", image: "images/sauce-ancho-chipotle.png" },
+            { id: "maple-bbq-chipotle", name: "Maple BBQ Chipotle", image: "images/sauce-maple-bbq-chipotle.png" }
         ]
     },
     combo: {
@@ -81,10 +89,14 @@ const FALLBACK_BUILDER_OPTIONS = {
             { id: "onion-rings", name: "Onion Rings", extraPrice: 0.75 }
         ],
         drinks: [
-            { id: "fountain-drink", name: "Fountain Drink", extraPrice: 0.00 },
-            { id: "vanilla-milkshake", name: "Vanilla Milkshake", extraPrice: 1.50 },
-            { id: "strawberry-milkshake", name: "Strawberry Milkshake", extraPrice: 1.50 },
-            { id: "orange-juice", name: "Orange Juice", extraPrice: 0.50 }
+            { id: "coke", name: "Coke", extraPrice: 0.00 },
+            { id: "diet-coke", name: "Diet Coke", extraPrice: 0.00 },
+            { id: "ginger-ale", name: "Canada Dry Ginger Ale", extraPrice: 0.00 },
+            { id: "sprite", name: "Sprite", extraPrice: 0.00 },
+            { id: "nestea", "name": "Nestea", extraPrice: 0.00 },
+            { id: "dasani-water", name: "Dasani Water", extraPrice: 1.00 },
+            { id: "vanilla-milkshake", name: "Vanilla Milkshake", extraPrice: 4.00 },
+            { id: "strawberry-milkshake", name: "Strawberry Milkshake", extraPrice: 4.00 }
         ]
     }
 };
@@ -218,7 +230,7 @@ class BurgerPricingEngine {
     getDefaultSelection() {
         return {
             bread: "sesame",
-            patties: { "beef-patty": 1 },
+            patties: {},
             toppings: {},
             salads: {},
             sauces: {},

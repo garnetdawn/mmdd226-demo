@@ -25,278 +25,196 @@
     };
 
     /**
-     * Get Top Bun SVG markup for a given bread type
+     * Helper to get options from pricing engine or fallback
      */
-    function getTopBunSvg(breadId) {
-        switch (breadId) {
-            case "gluten-free":
-                return `
-                    <div class="var-b-bun-top" title="Gluten Free Top Bun">
-                        <svg viewBox="0 0 240 70" class="var-b-svg-bun">
-                            <path d="M 30 60 C 30 18, 210 18, 210 60 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                            <rect x="100" y="32" width="40" height="16" rx="4" fill="#f3f4f6" stroke="#111827" stroke-width="1.5"/>
-                            <text x="120" y="44" font-family="sans-serif" font-size="9" font-weight="700" text-anchor="middle" fill="#111827">GF</text>
-                        </svg>
-                    </div>
-                `;
-            case "multigrain":
-                return `
-                    <div class="var-b-bun-top" title="Multigrain Top Bun">
-                        <svg viewBox="0 0 240 70" class="var-b-svg-bun">
-                            <path d="M 28 60 C 28 16, 212 16, 212 60 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                            <rect x="65" y="35" width="6" height="3" rx="1.5" transform="rotate(-20 65 35)" fill="#111827"/>
-                            <rect x="95" y="28" width="6" height="3" rx="1.5" transform="rotate(15 95 28)" fill="#111827"/>
-                            <rect x="125" y="25" width="7" height="3" rx="1.5" transform="rotate(-10 125 25)" fill="#111827"/>
-                            <rect x="155" y="32" width="6" height="3" rx="1.5" transform="rotate(25 155 32)" fill="#111827"/>
-                            <circle cx="80" cy="48" r="2" fill="#111827"/>
-                            <circle cx="110" cy="42" r="2" fill="#111827"/>
-                            <circle cx="140" cy="45" r="2" fill="#111827"/>
-                            <circle cx="170" cy="48" r="2" fill="#111827"/>
-                        </svg>
-                    </div>
-                `;
-            case "potato-bun":
-                return `
-                    <div class="var-b-bun-top" title="Potato Bun Top Bun">
-                        <svg viewBox="0 0 240 70" class="var-b-svg-bun">
-                            <path d="M 26 58 C 26 12, 214 12, 214 58 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                            <path d="M 50 32 C 75 22, 165 22, 190 32" fill="none" stroke="#e5e7eb" stroke-width="3" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                `;
-            case "ciabatta":
-                return `
-                    <div class="var-b-bun-top" title="Ciabatta Top Bun">
-                        <svg viewBox="0 0 240 65" class="var-b-svg-bun">
-                            <path d="M 28 54 C 28 26, 45 16, 120 16 C 195 16, 212 26, 212 54 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                            <ellipse cx="70" cy="36" rx="8" ry="3" fill="#f3f4f6" stroke="#111827" stroke-width="1.2"/>
-                            <ellipse cx="120" cy="32" rx="10" ry="3.5" fill="#f3f4f6" stroke="#111827" stroke-width="1.2"/>
-                            <ellipse cx="170" cy="36" rx="8" ry="3" fill="#f3f4f6" stroke="#111827" stroke-width="1.2"/>
-                        </svg>
-                    </div>
-                `;
-            case "sesame":
-            default:
-                return `
-                    <div class="var-b-bun-top" title="Sesame Seed Top Bun">
-                        <svg viewBox="0 0 240 70" class="var-b-svg-bun">
-                            <path d="M 28 60 C 28 15, 212 15, 212 60 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                            <ellipse cx="75" cy="38" rx="3" ry="1.5" transform="rotate(-15 75 38)" fill="#111827"/>
-                            <ellipse cx="100" cy="30" rx="3.5" ry="1.8" transform="rotate(35 100 30)" fill="#111827"/>
-                            <ellipse cx="125" cy="26" rx="3.5" ry="1.8" transform="rotate(-10 125 26)" fill="#111827"/>
-                            <ellipse cx="150" cy="32" rx="3.5" ry="1.8" transform="rotate(40 150 32)" fill="#111827"/>
-                            <ellipse cx="175" cy="42" rx="3" ry="1.5" transform="rotate(-25 175 42)" fill="#111827"/>
-                            <ellipse cx="115" cy="44" rx="3.5" ry="1.8" transform="rotate(-30 115 44)" fill="#111827"/>
-                            <ellipse cx="140" cy="46" rx="3.5" ry="1.8" transform="rotate(20 140 46)" fill="#111827"/>
-                        </svg>
-                    </div>
-                `;
-        }
+    function getOptions() {
+        return (window.burgerPricingEngine && window.burgerPricingEngine.options)
+            ? window.burgerPricingEngine.options
+            : FALLBACK_BUILDER_OPTIONS;
+    }
+
+    function getBreadOption(breadId) {
+        const opts = getOptions();
+        return (opts.bread && opts.bread.options) ? opts.bread.options.find(b => b.id === breadId) : null;
+    }
+
+    function getPattyOption(pattyId) {
+        const opts = getOptions();
+        return (opts.patty && opts.patty.options) ? opts.patty.options.find(p => p.id === pattyId) : null;
+    }
+
+    function getToppingOption(toppingId) {
+        const opts = getOptions();
+        return (opts.toppings && opts.toppings.options) ? opts.toppings.options.find(t => t.id === toppingId) : null;
+    }
+
+    function getSaladOption(saladId) {
+        const opts = getOptions();
+        return (opts.salads && opts.salads.options) ? opts.salads.options.find(s => s.id === saladId) : null;
+    }
+
+    function getSauceOption(sauceId) {
+        const opts = getOptions();
+        return (opts.sauces && opts.sauces.options) ? opts.sauces.options.find(s => s.id === sauceId) : null;
     }
 
     /**
-     * Get Bottom Bun SVG markup for a given bread type
+     * Get Top Bun Image Placeholder (230px width x 50px height)
      */
-    function getBottomBunSvg(breadId) {
-        switch (breadId) {
-            case "gluten-free":
-                return `
-                    <div class="var-b-bun-bottom" title="Gluten Free Bottom Bun">
-                        <svg viewBox="0 0 240 45" class="var-b-svg-bun">
-                            <path d="M 32 6 L 208 6 C 208 32, 32 32, 32 6 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                `;
-            case "multigrain":
-                return `
-                    <div class="var-b-bun-bottom" title="Multigrain Bottom Bun">
-                        <svg viewBox="0 0 240 45" class="var-b-svg-bun">
-                            <path d="M 30 6 L 210 6 C 210 32, 30 32, 30 6 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                            <circle cx="90" cy="20" r="1.5" fill="#111827"/>
-                            <circle cx="150" cy="20" r="1.5" fill="#111827"/>
-                        </svg>
-                    </div>
-                `;
-            case "potato-bun":
-                return `
-                    <div class="var-b-bun-bottom" title="Potato Bun Bottom Bun">
-                        <svg viewBox="0 0 240 45" class="var-b-svg-bun">
-                            <path d="M 28 6 L 212 6 C 212 34, 28 34, 28 6 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                `;
-            case "ciabatta":
-                return `
-                    <div class="var-b-bun-bottom" title="Ciabatta Bottom Bun">
-                        <svg viewBox="0 0 240 45" class="var-b-svg-bun">
-                            <path d="M 28 6 L 212 6 C 212 28, 204 34, 120 34 C 36 34, 28 28, 28 6 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                `;
-            case "sesame":
-            default:
-                return `
-                    <div class="var-b-bun-bottom" title="Sesame Seed Bottom Bun">
-                        <svg viewBox="0 0 240 45" class="var-b-svg-bun">
-                            <path d="M 30 6 L 210 6 C 210 32, 30 32, 30 6 Z" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                `;
-        }
+    function getTopBunVisual(breadId) {
+        const opt = getBreadOption(breadId);
+        const name = opt ? opt.name : "Top Bun";
+        const imgSrc = (opt && opt.imageTop) ? opt.imageTop : `images/bun-top-${breadId}.png`;
+        return `
+            <div class="var-b-layer-item var-b-layer-bun-top" title="${name} Top Bun">
+                <img src="${imgSrc}" alt="${name} Top Bun" class="var-b-layer-img var-b-img-bun-top" 
+                     style="display:none;" 
+                     onload="this.style.display='block'; if(this.nextElementSibling) this.nextElementSibling.style.display='none';" 
+                     onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                <div class="var-b-placeholder-box var-b-ph-bun-top">
+                    <span>${name} Top Bun [230&times;50]</span>
+                </div>
+            </div>
+        `;
     }
 
     /**
-     * Get Centralized Burger Stack SVG (Top bun, sauces, veggies, toppings, patties, lettuce, bottom bun)
+     * Get Bottom Bun Image Placeholder (230px width x 30px height)
      */
-    function getCentralizedBurgerSvg() {
+    function getBottomBunVisual(breadId) {
+        const opt = getBreadOption(breadId);
+        const name = opt ? opt.name : "Bottom Bun";
+        const imgSrc = (opt && opt.imageBottom) ? opt.imageBottom : `images/bun-bottom-${breadId}.png`;
+        return `
+            <div class="var-b-layer-item var-b-layer-bun-bottom" title="${name} Bottom Bun">
+                <img src="${imgSrc}" alt="${name} Bottom Bun" class="var-b-layer-img var-b-img-bun-bottom" 
+                     style="display:none;" 
+                     onload="this.style.display='block'; if(this.nextElementSibling) this.nextElementSibling.style.display='none';" 
+                     onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                <div class="var-b-placeholder-box var-b-ph-bun-bottom">
+                    <span>${name} Bottom Bun [230&times;30]</span>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Get Patty Image Placeholder (230px width x 30px height)
+     */
+    function getPattyLayerVisual(pattyId) {
+        const opt = getPattyOption(pattyId);
+        const name = opt ? opt.name : "Patty";
+        const imgSrc = (opt && opt.image) ? opt.image : `images/patty-${pattyId}.png`;
+        return `
+            <div class="var-b-layer-item var-b-layer-patty" title="${name}">
+                <img src="${imgSrc}" alt="${name}" class="var-b-layer-img var-b-img-patty" 
+                     style="display:none;" 
+                     onload="this.style.display='block'; if(this.nextElementSibling) this.nextElementSibling.style.display='none';" 
+                     onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                <div class="var-b-placeholder-box var-b-ph-patty">
+                    <span>${name} [230&times;30]</span>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Get Topping / Salad / Sauce Image Placeholder (230px width x 20px height)
+     */
+    function getToppingLayerVisual(category, itemId) {
+        let opt = null;
+        let defaultImg = "";
+        let suffix = "";
+
+        if (category === "toppings") {
+            opt = getToppingOption(itemId);
+            defaultImg = `images/topping-${itemId}.png`;
+        } else if (category === "salads") {
+            opt = getSaladOption(itemId);
+            defaultImg = `images/salad-${itemId}.png`;
+        } else if (category === "sauces") {
+            opt = getSauceOption(itemId);
+            defaultImg = `images/sauce-${itemId}.png`;
+            suffix = " Sauce";
+        }
+
+        const name = opt ? `${opt.name}${suffix}` : itemId;
+        const imgSrc = (opt && opt.image) ? opt.image : defaultImg;
+
+        return `
+            <div class="var-b-layer-item var-b-layer-topping" title="${name}">
+                <img src="${imgSrc}" alt="${name}" class="var-b-layer-img var-b-img-topping" 
+                     style="display:none;" 
+                     onload="this.style.display='block'; if(this.nextElementSibling) this.nextElementSibling.style.display='none';" 
+                     onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                <div class="var-b-placeholder-box var-b-ph-topping">
+                    <span>${name} [230&times;20]</span>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Get Centralized Burger Stack (Top bun, sauces, salads, toppings, patties, bottom bun)
+     * All layers use exact image placeholder dimensions:
+     * - Top bun: 230px width x 50px height
+     * - Bottom bun: 230px width x 30px height
+     * - Patties: 230px width x 30px height
+     * - Toppings/Salads/Sauces: 230px width x 20px height
+     */
+    function getCentralizedBurgerVisual() {
         let layersHtml = "";
         let totalFillings = 0;
 
-        // 1. Sauces (if any selected)
-        const sauceList = ["mustard", "mayo", "bbq", "chipotle"];
-        sauceList.forEach(sId => {
-            const count = (builderState.sauces && builderState.sauces[sId]) || (builderState.saladAndSauces && builderState.saladAndSauces[sId]) || 0;
-            if (count > 0) {
-                totalFillings++;
-                layersHtml += `
-                    <div class="var-b-layer var-b-layer-sauce" title="${sId}">
-                        <svg viewBox="0 0 240 18" class="var-b-svg-layer">
-                            <path d="M 40 9 Q 60 16, 80 9 T 120 9 T 160 9 T 200 9" fill="none" stroke="#111827" stroke-width="3" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                `;
-            }
-        });
-
-        // 2. Veggies (Tomato, Pickle, Red Onion, Jalapeño)
-        const getSaladQty = (id) => (builderState.salads && builderState.salads[id]) || (builderState.saladAndSauces && builderState.saladAndSauces[id]) || 0;
-
-        if (getSaladQty("tomato") > 0) {
-            for (let i = 0; i < Math.min(getSaladQty("tomato"), 3); i++) {
-                totalFillings++;
-                layersHtml += `
-                    <div class="var-b-layer var-b-layer-tomato" title="Tomato">
-                        <svg viewBox="0 0 240 22" class="var-b-svg-layer">
-                            <rect x="32" y="3" width="176" height="15" rx="7.5" fill="#f3f4f6" stroke="#111827" stroke-width="2.2"/>
-                            <circle cx="80" cy="10.5" r="3" fill="#111827"/>
-                            <circle cx="120" cy="10.5" r="3" fill="#111827"/>
-                            <circle cx="160" cy="10.5" r="3" fill="#111827"/>
-                        </svg>
-                    </div>
-                `;
-            }
+        // 1. Sauces (230px width x 20px height)
+        if (builderState.sauces) {
+            Object.entries(builderState.sauces).forEach(([sId, qty]) => {
+                for (let i = 0; i < qty; i++) {
+                    totalFillings++;
+                    layersHtml += getToppingLayerVisual("sauces", sId);
+                }
+            });
         }
 
-        if (getSaladQty("pickle") > 0) {
-            totalFillings++;
-            layersHtml += `
-                <div class="var-b-layer var-b-layer-pickle" title="Pickles">
-                    <svg viewBox="0 0 240 20" class="var-b-svg-layer">
-                        <ellipse cx="75" cy="10" rx="30" ry="7" fill="#f3f4f6" stroke="#111827" stroke-width="2.2"/>
-                        <ellipse cx="165" cy="10" rx="30" ry="7" fill="#f3f4f6" stroke="#111827" stroke-width="2.2"/>
-                    </svg>
-                </div>
-            `;
+        // 2. Salads (230px width x 20px height) - excluding lettuce
+        if (builderState.salads) {
+            Object.entries(builderState.salads).forEach(([sId, qty]) => {
+                if (sId !== "lettuce") {
+                    for (let i = 0; i < qty; i++) {
+                        totalFillings++;
+                        layersHtml += getToppingLayerVisual("salads", sId);
+                    }
+                }
+            });
         }
 
-        if (getSaladQty("red-onion") > 0) {
-            totalFillings++;
-            layersHtml += `
-                <div class="var-b-layer var-b-layer-onion" title="Red Onion">
-                    <svg viewBox="0 0 240 20" class="var-b-svg-layer">
-                        <path d="M 45 13 C 48 4, 115 4, 118 13" fill="none" stroke="#111827" stroke-width="2.5"/>
-                        <path d="M 122 13 C 125 4, 192 4, 195 13" fill="none" stroke="#111827" stroke-width="2.5"/>
-                    </svg>
-                </div>
-            `;
+        // 3. Toppings (230px width x 20px height)
+        if (builderState.toppings) {
+            Object.entries(builderState.toppings).forEach(([tId, qty]) => {
+                for (let i = 0; i < qty; i++) {
+                    totalFillings++;
+                    layersHtml += getToppingLayerVisual("toppings", tId);
+                }
+            });
         }
 
-        if (getSaladQty("jalapeno") > 0) {
-            totalFillings++;
-            layersHtml += `
-                <div class="var-b-layer var-b-layer-jalapeno" title="Jalapeño">
-                    <svg viewBox="0 0 240 18" class="var-b-svg-layer">
-                        <circle cx="85" cy="9" r="7" fill="#ffffff" stroke="#111827" stroke-width="2.2"/>
-                        <circle cx="120" cy="9" r="7" fill="#ffffff" stroke="#111827" stroke-width="2.2"/>
-                        <circle cx="155" cy="9" r="7" fill="#ffffff" stroke="#111827" stroke-width="2.2"/>
-                    </svg>
-                </div>
-            `;
+        // 4. Patties (230px width x 30px height)
+        if (builderState.patties) {
+            Object.entries(builderState.patties).forEach(([pId, qty]) => {
+                for (let i = 0; i < qty; i++) {
+                    totalFillings++;
+                    layersHtml += getPattyLayerVisual(pId);
+                }
+            });
         }
 
-        // 3. Toppings (Cheese, Bacon, Egg, etc.)
-        const hasCheese = (builderState.toppings["cheddar"] || 0) + (builderState.toppings["smoked-cheddar"] || 0) + (builderState.toppings["blue-cheese"] || 0) > 0;
-        if (hasCheese) {
-            totalFillings++;
-            layersHtml += `
-                <div class="var-b-layer var-b-layer-cheese" title="Cheese">
-                    <svg viewBox="0 0 240 24" class="var-b-svg-layer">
-                        <polygon points="28,3 212,3 198,19 120,23 42,19" fill="#f9fafb" stroke="#111827" stroke-width="2.5"/>
-                    </svg>
-                </div>
-            `;
-        }
-
-        const hasBacon = (builderState.toppings["beef-bacon"] || 0) + (builderState.toppings["strip-bacon"] || 0) > 0;
-        if (hasBacon) {
-            totalFillings++;
-            layersHtml += `
-                <div class="var-b-layer var-b-layer-bacon" title="Bacon">
-                    <svg viewBox="0 0 240 20" class="var-b-svg-layer">
-                        <path d="M 35 10 Q 60 2, 85 10 T 135 10 T 185 10 T 205 10" fill="none" stroke="#111827" stroke-width="4.5" stroke-linecap="round"/>
-                    </svg>
-                </div>
-            `;
-        }
-
-        if (builderState.toppings["fried-egg"] > 0) {
-            totalFillings++;
-            layersHtml += `
-                <div class="var-b-layer var-b-layer-egg" title="Fried Egg">
-                    <svg viewBox="0 0 240 26" class="var-b-svg-layer">
-                        <ellipse cx="120" cy="13" rx="85" ry="10" fill="#ffffff" stroke="#111827" stroke-width="2.2"/>
-                        <circle cx="120" cy="13" r="7" fill="#e5e7eb" stroke="#111827" stroke-width="2"/>
-                    </svg>
-                </div>
-            `;
-        }
-
-        if (builderState.toppings["guacamole"] > 0 || builderState.toppings["mushrooms"] > 0 || builderState.toppings["crispy-onions"] > 0) {
-            totalFillings++;
-            layersHtml += `
-                <div class="var-b-layer var-b-layer-extra-topping" title="Gourmet Toppings">
-                    <svg viewBox="0 0 240 18" class="var-b-svg-layer">
-                        <path d="M 40 11 C 60 5, 90 15, 120 9 C 150 15, 180 5, 200 11" fill="none" stroke="#111827" stroke-width="3" stroke-linecap="round"/>
-                    </svg>
-                </div>
-            `;
-        }
-
-        // 4. Patties
-        Object.entries(builderState.patties).forEach(([pid, qty]) => {
+        // 5. Lettuce (230px width x 20px height - bed under patties)
+        if (builderState.salads && builderState.salads["lettuce"] > 0) {
+            const qty = builderState.salads["lettuce"];
             for (let i = 0; i < qty; i++) {
                 totalFillings++;
-                layersHtml += `
-                    <div class="var-b-layer var-b-patty-layer" title="${pid}">
-                        <svg viewBox="0 0 240 32" class="var-b-svg-patty">
-                            <rect x="26" y="4" width="188" height="24" rx="10" fill="#374151" stroke="#111827" stroke-width="2.5"/>
-                            <line x1="48" y1="16" x2="192" y2="16" stroke="#1f2937" stroke-width="2" stroke-dasharray="6,6"/>
-                        </svg>
-                    </div>
-                `;
+                layersHtml += getToppingLayerVisual("salads", "lettuce");
             }
-        });
-
-        // 5. Lettuce (base bed under patties)
-        if (getSaladQty("lettuce") > 0) {
-            totalFillings++;
-            layersHtml += `
-                <div class="var-b-layer var-b-layer-lettuce" title="Lettuce">
-                    <svg viewBox="0 0 240 26" class="var-b-svg-layer">
-                        <path d="M 26 15 Q 40 4, 58 15 T 95 15 T 132 15 T 169 15 T 206 15 T 214 15" fill="#ffffff" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-            `;
         }
 
         // If no fillings at all, render open dashed guide gap
@@ -309,11 +227,34 @@
         }
 
         return `
-            ${getTopBunSvg(builderState.bread)}
+            ${getTopBunVisual(builderState.bread)}
             <div class="var-b-fillings-container">
                 ${layersHtml}
             </div>
-            ${getBottomBunSvg(builderState.bread)}
+            ${getBottomBunVisual(builderState.bread)}
+        `;
+    }
+
+    // Alias for backward compatibility across step renderers
+    const getCentralizedBurgerSvg = getCentralizedBurgerVisual;
+
+    /**
+     * Render the Burger Visualizer stage column
+     * Kept separate from selections so it does not scroll and stays visible at all times
+     */
+    function renderVisualizerColumnHtml(currentPrice) {
+        return `
+            <div class="var-b-visual-column">
+                <div class="var-b-stage">
+                    <div class="var-b-burger-preview" id="var-b-burger-preview">
+                        ${getCentralizedBurgerVisual()}
+                    </div>
+                    <div class="var-b-price-badge">
+                        <span class="var-b-price-label">Price:</span>
+                        <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
+                    </div>
+                </div>
+            </div>
         `;
     }
 
@@ -352,7 +293,7 @@
         builderState.baseItem = item;
         builderState.currentStep = 1;
         builderState.bread = "sesame";
-        builderState.patties = { "beef-patty": 1 }; // Default 1 beef patty
+        builderState.patties = {}; // No default patty selected
         builderState.toppings = {};
         builderState.salads = {};
         builderState.sauces = {};
@@ -433,31 +374,32 @@
                     </div>
 
                     <div class="var-b-body">
-                        <div class="var-b-stage">
-                            <div class="var-b-burger-preview" id="var-b-burger-preview">
-                                ${getCentralizedBurgerSvg()}
-                            </div>
-                            <div class="var-b-price-badge">
-                                <span class="var-b-price-label">Price:</span>
-                                <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
-                            </div>
-                        </div>
+                        ${renderVisualizerColumnHtml(currentPrice)}
 
-                        <div class="var-b-cards-grid" role="radiogroup" aria-label="Choose your bread">
-                            ${breadOptions.map(b => {
-                                const isSelected = builderState.bread === b.id;
-                                return `
-                                    <button type="button" 
-                                            class="var-b-option-card ${isSelected ? "active" : ""}" 
-                                            data-bread-id="${b.id}"
-                                            role="radio"
-                                            aria-checked="${isSelected}">
-                                        <div class="card-radio-mark">${isSelected ? "✓" : ""}</div>
-                                        <span class="card-option-name">${b.name}</span>
-                                        <span class="card-option-sub">Included</span>
-                                    </button>
-                                `;
-                            }).join("")}
+                        <div class="var-b-selections-column">
+                            <div class="var-b-item-list" role="radiogroup" aria-label="Choose your bread">
+                                <div class="patty-hint-banner">
+                                    <span>* Choose 1 bread option. All bread options are <strong>included</strong>.</span>
+                                </div>
+                                ${breadOptions.map(b => {
+                                    const isSelected = builderState.bread === b.id;
+                                    return `
+                                        <div class="var-b-item-row ${isSelected ? "has-qty" : ""}" 
+                                             data-bread-id="${b.id}"
+                                             role="radio"
+                                             aria-checked="${isSelected}"
+                                             style="cursor:pointer;">
+                                            <div class="var-b-item-info">
+                                                <span class="var-b-item-name">${b.name}</span>
+                                                <span class="var-b-item-pricing-note">Included</span>
+                                            </div>
+                                            <div class="var-b-bread-radio ${isSelected ? "selected" : ""}" id="bread-radio-${b.id}">
+                                                ${isSelected ? "✓" : ""}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join("")}
+                            </div>
                         </div>
                     </div>
 
@@ -477,26 +419,29 @@
         const overlay = document.getElementById("var-b-overlay");
         const closeBtn = document.getElementById("var-b-close");
         const nextBtn = document.getElementById("var-b-next");
-        const cardsGrid = document.querySelector(".var-b-cards-grid");
+        const listEl = document.querySelector(".var-b-item-list");
 
         closeBtn?.addEventListener("click", closeBuilder);
         overlay?.addEventListener("click", (e) => {
             if (e.target === overlay) closeBuilder();
         });
 
-        cardsGrid?.addEventListener("click", (e) => {
-            const card = e.target.closest(".var-b-option-card");
-            if (!card) return;
+        listEl?.addEventListener("click", (e) => {
+            const row = e.target.closest(".var-b-item-row");
+            if (!row) return;
 
-            const breadId = card.dataset.breadId;
+            const breadId = row.dataset.breadId;
             builderState.bread = breadId;
 
-            cardsGrid.querySelectorAll(".var-b-option-card").forEach(c => {
-                const isSelected = c.dataset.breadId === breadId;
-                c.classList.toggle("active", isSelected);
-                c.setAttribute("aria-checked", isSelected ? "true" : "false");
-                const mark = c.querySelector(".card-radio-mark");
-                if (mark) mark.textContent = isSelected ? "✓" : "";
+            listEl.querySelectorAll(".var-b-item-row").forEach(r => {
+                const isSelected = r.dataset.breadId === breadId;
+                r.classList.toggle("has-qty", isSelected);
+                r.setAttribute("aria-checked", isSelected ? "true" : "false");
+                const radio = r.querySelector(".var-b-bread-radio");
+                if (radio) {
+                    radio.textContent = isSelected ? "✓" : "";
+                    radio.classList.toggle("selected", isSelected);
+                }
             });
 
             const previewEl = document.getElementById("var-b-burger-preview");
@@ -509,6 +454,7 @@
             renderStep(2);
         });
     }
+
 
     /**
      * ==========================================================
@@ -536,50 +482,44 @@
                     </div>
 
                     <div class="var-b-body">
-                        <div class="var-b-stage">
-                            <div class="var-b-burger-preview" id="var-b-burger-preview">
-                                ${getCentralizedBurgerSvg()}
-                            </div>
-                            <div class="var-b-price-badge">
-                                <span class="var-b-price-label">Price:</span>
-                                <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
-                            </div>
-                        </div>
+                        ${renderVisualizerColumnHtml(currentPrice)}
 
-                        <div class="var-b-item-list" role="group" aria-label="Choose patties">
-                            <div class="patty-hint-banner">
-                                <span>* First patty is <strong>FREE</strong>. Additional patties are <strong>+$4.70</strong> each.</span>
+                        <div class="var-b-selections-column">
+                            <div class="var-b-item-list" role="group" aria-label="Choose patties">
+                                <div class="patty-hint-banner">
+                                    <span>* First patty is <strong>FREE</strong>. Additional patties are <strong>+$4.70</strong> each.</span>
+                                </div>
+                                ${pattyOptions.map(p => {
+                                    const qty = builderState.patties[p.id] || 0;
+                                    const hasSelection = qty > 0;
+                                    return `
+                                        <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${p.id}">
+                                            <div class="var-b-item-info">
+                                                <span class="var-b-item-name">${p.name}</span>
+                                                <span class="var-b-item-pricing-note">${getPattyRowNote(p.id, qty)}</span>
+                                            </div>
+                                            <div class="var-b-stepper-ctrl">
+                                                <button type="button" 
+                                                        class="var-b-step-btn btn-minus" 
+                                                        data-type="patty"
+                                                        data-id="${p.id}" 
+                                                        aria-label="Decrease ${p.name}" 
+                                                        ${qty === 0 ? "disabled" : ""}>
+                                                    &minus;
+                                                </button>
+                                                <span class="var-b-step-qty" id="qty-patty-${p.id}">${qty}</span>
+                                                <button type="button" 
+                                                        class="var-b-step-btn btn-plus" 
+                                                        data-type="patty"
+                                                        data-id="${p.id}" 
+                                                        aria-label="Increase ${p.name}">
+                                                    &#43;
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join("")}
                             </div>
-                            ${pattyOptions.map(p => {
-                                const qty = builderState.patties[p.id] || 0;
-                                const hasSelection = qty > 0;
-                                return `
-                                    <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${p.id}">
-                                        <div class="var-b-item-info">
-                                            <span class="var-b-item-name">${p.name}</span>
-                                            <span class="var-b-item-pricing-note">${getPattyRowNote(p.id, qty)}</span>
-                                        </div>
-                                        <div class="var-b-stepper-ctrl">
-                                            <button type="button" 
-                                                    class="var-b-step-btn btn-minus" 
-                                                    data-type="patty"
-                                                    data-id="${p.id}" 
-                                                    aria-label="Decrease ${p.name}" 
-                                                    ${qty === 0 ? "disabled" : ""}>
-                                                &minus;
-                                            </button>
-                                            <span class="var-b-step-qty" id="qty-patty-${p.id}">${qty}</span>
-                                            <button type="button" 
-                                                    class="var-b-step-btn btn-plus" 
-                                                    data-type="patty"
-                                                    data-id="${p.id}" 
-                                                    aria-label="Increase ${p.name}">
-                                                &#43;
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join("")}
                         </div>
                     </div>
 
@@ -691,50 +631,44 @@
                     </div>
 
                     <div class="var-b-body">
-                        <div class="var-b-stage">
-                            <div class="var-b-burger-preview" id="var-b-burger-preview">
-                                ${getCentralizedBurgerSvg()}
-                            </div>
-                            <div class="var-b-price-badge">
-                                <span class="var-b-price-label">Price:</span>
-                                <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
-                            </div>
-                        </div>
+                        ${renderVisualizerColumnHtml(currentPrice)}
 
-                        <div class="var-b-item-list" role="group" aria-label="Choose toppings">
-                            <div class="patty-hint-banner">
-                                <span>* Toppings are <strong>+$1.29</strong> each. You can add multiple of each option.</span>
+                        <div class="var-b-selections-column">
+                            <div class="var-b-item-list" role="group" aria-label="Choose toppings">
+                                <div class="patty-hint-banner">
+                                    <span>* Toppings are <strong>+$1.29</strong> each. You can add multiple of each option.</span>
+                                </div>
+                                ${toppingOptions.map(t => {
+                                    const qty = builderState.toppings[t.id] || 0;
+                                    const hasSelection = qty > 0;
+                                    return `
+                                        <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${t.id}">
+                                            <div class="var-b-item-info">
+                                                <span class="var-b-item-name">${t.name}</span>
+                                                <span class="var-b-item-pricing-note">${qty > 0 ? `${qty} added (+$${(qty * 1.29).toFixed(2)})` : "+$1.29 each"}</span>
+                                            </div>
+                                            <div class="var-b-stepper-ctrl">
+                                                <button type="button" 
+                                                        class="var-b-step-btn btn-minus" 
+                                                        data-type="toppings"
+                                                        data-id="${t.id}" 
+                                                        aria-label="Decrease ${t.name}" 
+                                                        ${qty === 0 ? "disabled" : ""}>
+                                                    &minus;
+                                                </button>
+                                                <span class="var-b-step-qty" id="qty-toppings-${t.id}">${qty}</span>
+                                                <button type="button" 
+                                                        class="var-b-step-btn btn-plus" 
+                                                        data-type="toppings"
+                                                        data-id="${t.id}" 
+                                                        aria-label="Increase ${t.name}">
+                                                    &#43;
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join("")}
                             </div>
-                            ${toppingOptions.map(t => {
-                                const qty = builderState.toppings[t.id] || 0;
-                                const hasSelection = qty > 0;
-                                return `
-                                    <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${t.id}">
-                                        <div class="var-b-item-info">
-                                            <span class="var-b-item-name">${t.name}</span>
-                                            <span class="var-b-item-pricing-note">${qty > 0 ? `${qty} added (+$${(qty * 1.29).toFixed(2)})` : "+$1.29 each"}</span>
-                                        </div>
-                                        <div class="var-b-stepper-ctrl">
-                                            <button type="button" 
-                                                    class="var-b-step-btn btn-minus" 
-                                                    data-type="toppings"
-                                                    data-id="${t.id}" 
-                                                    aria-label="Decrease ${t.name}" 
-                                                    ${qty === 0 ? "disabled" : ""}>
-                                                &minus;
-                                            </button>
-                                            <span class="var-b-step-qty" id="qty-toppings-${t.id}">${qty}</span>
-                                            <button type="button" 
-                                                    class="var-b-step-btn btn-plus" 
-                                                    data-type="toppings"
-                                                    data-id="${t.id}" 
-                                                    aria-label="Increase ${t.name}">
-                                                &#43;
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join("")}
                         </div>
                     </div>
 
@@ -841,50 +775,44 @@
                     </div>
 
                     <div class="var-b-body">
-                        <div class="var-b-stage">
-                            <div class="var-b-burger-preview" id="var-b-burger-preview">
-                                ${getCentralizedBurgerSvg()}
-                            </div>
-                            <div class="var-b-price-badge">
-                                <span class="var-b-price-label">Price:</span>
-                                <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
-                            </div>
-                        </div>
+                        ${renderVisualizerColumnHtml(currentPrice)}
 
-                        <div class="var-b-item-list" role="group" aria-label="Choose fresh salads">
-                            <div class="patty-hint-banner">
-                                <span id="salads-status-banner">${getSaladsStatusText()}</span>
+                        <div class="var-b-selections-column">
+                            <div class="var-b-item-list" role="group" aria-label="Choose fresh salads">
+                                <div class="patty-hint-banner">
+                                    <span id="salads-status-banner">${getSaladsStatusText()}</span>
+                                </div>
+                                ${saladOptions.map(s => {
+                                    const qty = (builderState.salads && builderState.salads[s.id]) || 0;
+                                    const hasSelection = qty > 0;
+                                    return `
+                                        <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${s.id}">
+                                            <div class="var-b-item-info">
+                                                <span class="var-b-item-name">${s.name}</span>
+                                                <span class="var-b-item-pricing-note">${qty > 0 ? `${qty} selected` : "First 6 free"}</span>
+                                            </div>
+                                            <div class="var-b-stepper-ctrl">
+                                                <button type="button" 
+                                                        class="var-b-step-btn btn-minus" 
+                                                        data-type="salads"
+                                                        data-id="${s.id}" 
+                                                        aria-label="Decrease ${s.name}" 
+                                                        ${qty === 0 ? "disabled" : ""}>
+                                                    &minus;
+                                                </button>
+                                                <span class="var-b-step-qty" id="qty-salads-${s.id}">${qty}</span>
+                                                <button type="button" 
+                                                        class="var-b-step-btn btn-plus" 
+                                                        data-type="salads"
+                                                        data-id="${s.id}" 
+                                                        aria-label="Increase ${s.name}">
+                                                    &#43;
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join("")}
                             </div>
-                            ${saladOptions.map(s => {
-                                const qty = (builderState.salads && builderState.salads[s.id]) || 0;
-                                const hasSelection = qty > 0;
-                                return `
-                                    <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${s.id}">
-                                        <div class="var-b-item-info">
-                                            <span class="var-b-item-name">${s.name}</span>
-                                            <span class="var-b-item-pricing-note">${qty > 0 ? `${qty} selected` : "First 6 free"}</span>
-                                        </div>
-                                        <div class="var-b-stepper-ctrl">
-                                            <button type="button" 
-                                                    class="var-b-step-btn btn-minus" 
-                                                    data-type="salads"
-                                                    data-id="${s.id}" 
-                                                    aria-label="Decrease ${s.name}" 
-                                                    ${qty === 0 ? "disabled" : ""}>
-                                                &minus;
-                                            </button>
-                                            <span class="var-b-step-qty" id="qty-salads-${s.id}">${qty}</span>
-                                            <button type="button" 
-                                                    class="var-b-step-btn btn-plus" 
-                                                    data-type="salads"
-                                                    data-id="${s.id}" 
-                                                    aria-label="Increase ${s.name}">
-                                                &#43;
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join("")}
                         </div>
                     </div>
 
@@ -904,15 +832,17 @@
     }
 
     function getSaladsStatusText() {
+        const opts = getOptions();
+        const freeCount = (opts.salads && typeof opts.salads.freeCount === "number") ? opts.salads.freeCount : 4;
         let total = 0;
         if (builderState.salads) {
             Object.values(builderState.salads).forEach(q => total += q);
         }
-        if (total <= 6) {
-            return `* First 6 salads are <strong>FREE</strong> (${total}/6 selected). Extra items are <strong>+$0.50</strong> each.`;
+        if (total <= freeCount) {
+            return `* First ${freeCount} salads are <strong>FREE</strong> (${total}/${freeCount} selected). Extra items are <strong>+$0.50</strong> each.`;
         }
-        const extra = total - 6;
-        return `* First 6 salads free. ${extra} extra selected (<strong>+$${(extra * 0.50).toFixed(2)}</strong>).`;
+        const extra = total - freeCount;
+        return `* First ${freeCount} salads free. ${extra} extra selected (<strong>+$${(extra * 0.50).toFixed(2)}</strong>).`;
     }
 
     function setupSaladsEvents() {
@@ -1007,50 +937,44 @@
                     </div>
 
                     <div class="var-b-body">
-                        <div class="var-b-stage">
-                            <div class="var-b-burger-preview" id="var-b-burger-preview">
-                                ${getCentralizedBurgerSvg()}
-                            </div>
-                            <div class="var-b-price-badge">
-                                <span class="var-b-price-label">Price:</span>
-                                <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
-                            </div>
-                        </div>
+                        ${renderVisualizerColumnHtml(currentPrice)}
 
-                        <div class="var-b-item-list" role="group" aria-label="Choose sauces and condiments">
-                            <div class="patty-hint-banner">
-                                <span id="sauces-status-banner">${getSaucesStatusText()}</span>
+                        <div class="var-b-selections-column">
+                            <div class="var-b-item-list" role="group" aria-label="Choose sauces and condiments">
+                                <div class="patty-hint-banner">
+                                    <span id="sauces-status-banner">${getSaucesStatusText()}</span>
+                                </div>
+                                ${sauceOptions.map(s => {
+                                    const qty = (builderState.sauces && builderState.sauces[s.id]) || 0;
+                                    const hasSelection = qty > 0;
+                                    return `
+                                        <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${s.id}">
+                                            <div class="var-b-item-info">
+                                                <span class="var-b-item-name">${s.name}</span>
+                                                <span class="var-b-item-pricing-note">${qty > 0 ? `${qty} selected` : "First 6 free"}</span>
+                                            </div>
+                                            <div class="var-b-stepper-ctrl">
+                                                <button type="button" 
+                                                        class="var-b-step-btn btn-minus" 
+                                                        data-type="sauces"
+                                                        data-id="${s.id}" 
+                                                        aria-label="Decrease ${s.name}" 
+                                                        ${qty === 0 ? "disabled" : ""}>
+                                                    &minus;
+                                                </button>
+                                                <span class="var-b-step-qty" id="qty-sauces-${s.id}">${qty}</span>
+                                                <button type="button" 
+                                                        class="var-b-step-btn btn-plus" 
+                                                        data-type="sauces"
+                                                        data-id="${s.id}" 
+                                                        aria-label="Increase ${s.name}">
+                                                    &#43;
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join("")}
                             </div>
-                            ${sauceOptions.map(s => {
-                                const qty = (builderState.sauces && builderState.sauces[s.id]) || 0;
-                                const hasSelection = qty > 0;
-                                return `
-                                    <div class="var-b-item-row ${hasSelection ? "has-qty" : ""}" data-item-id="${s.id}">
-                                        <div class="var-b-item-info">
-                                            <span class="var-b-item-name">${s.name}</span>
-                                            <span class="var-b-item-pricing-note">${qty > 0 ? `${qty} selected` : "First 6 free"}</span>
-                                        </div>
-                                        <div class="var-b-stepper-ctrl">
-                                            <button type="button" 
-                                                    class="var-b-step-btn btn-minus" 
-                                                    data-type="sauces"
-                                                    data-id="${s.id}" 
-                                                    aria-label="Decrease ${s.name}" 
-                                                    ${qty === 0 ? "disabled" : ""}>
-                                                &minus;
-                                            </button>
-                                            <span class="var-b-step-qty" id="qty-sauces-${s.id}">${qty}</span>
-                                            <button type="button" 
-                                                    class="var-b-step-btn btn-plus" 
-                                                    data-type="sauces"
-                                                    data-id="${s.id}" 
-                                                    aria-label="Increase ${s.name}">
-                                                &#43;
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join("")}
                         </div>
                     </div>
 
@@ -1070,15 +994,17 @@
     }
 
     function getSaucesStatusText() {
+        const opts = getOptions();
+        const freeCount = (opts.sauces && typeof opts.sauces.freeCount === "number") ? opts.sauces.freeCount : 2;
         let total = 0;
         if (builderState.sauces) {
             Object.values(builderState.sauces).forEach(q => total += q);
         }
-        if (total <= 6) {
-            return `* First 6 sauces are <strong>FREE</strong> (${total}/6 selected). Extra items are <strong>+$0.50</strong> each.`;
+        if (total <= freeCount) {
+            return `* First ${freeCount} sauces are <strong>FREE</strong> (${total}/${freeCount} selected). Extra items are <strong>+$0.50</strong> each.`;
         }
-        const extra = total - 6;
-        return `* First 6 sauces free. ${extra} extra selected (<strong>+$${(extra * 0.50).toFixed(2)}</strong>).`;
+        const extra = total - freeCount;
+        return `* First ${freeCount} sauces free. ${extra} extra selected (<strong>+$${(extra * 0.50).toFixed(2)}</strong>).`;
     }
 
     function setupSaucesEvents() {
@@ -1191,88 +1117,82 @@
                     </div>
 
                     <div class="var-b-body">
-                        <div class="var-b-stage">
-                            <div class="var-b-burger-preview" id="var-b-burger-preview">
-                                ${getCentralizedBurgerSvg()}
-                            </div>
-                            <div class="var-b-price-badge">
-                                <span class="var-b-price-label">Price:</span>
-                                <span class="var-b-price-val" id="var-b-price-val">$${currentPrice.toFixed(2)}</span>
-                            </div>
-                        </div>
+                        ${renderVisualizerColumnHtml(currentPrice)}
 
-                        <div class="var-b-combo-wrapper">
-                            <!-- Combo vs No Combo Toggle -->
-                            <div class="var-b-combo-toggle-wrapper">
-                                <span class="var-b-combo-toggle-label">Make it a Combo?</span>
-                                <div class="combo-solo-toggle var-b-combo-toggle" role="group" aria-label="Combo or Solo Selection">
-                                    <button type="button" class="toggle-mode-btn ${!isCombo ? "active" : ""}" id="var-b-toggle-solo">
-                                        No Combo (Solo)
-                                    </button>
-                                    <button type="button" class="toggle-mode-btn ${isCombo ? "active" : ""}" id="var-b-toggle-combo">
-                                        Make it a Combo (+$${(comboOptions.basePrice || 4.99).toFixed(2)})
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- No Combo Message -->
-                            <div class="var-b-no-combo-banner ${isCombo ? "hidden" : ""}" id="var-b-no-combo-msg">
-                                Solo burger selected. Switch to <strong>Make it a Combo</strong> above to add a side and drink.
-                            </div>
-
-                            <!-- Combo Sides & Drinks Options (Disappear if no combo is selected) -->
-                            <div class="var-b-combo-options ${isCombo ? "" : "hidden"}" id="var-b-combo-options">
-                                <!-- Sides Section -->
-                                <div class="var-b-combo-group">
-                                    <div class="var-b-combo-group-header">
-                                        <span class="var-b-combo-group-title">Choose Side</span>
-                                        <span class="var-b-combo-group-subtitle">Select 1 option</span>
-                                    </div>
-                                    <div class="var-b-combo-grid" id="var-b-sides-grid" role="radiogroup" aria-label="Choose a side">
-                                        ${sides.map(s => {
-                                            const isSelected = builderState.combo.sideId === s.id;
-                                            const extraText = (s.extraPrice && s.extraPrice > 0)
-                                                ? `+$${s.extraPrice.toFixed(2)}`
-                                                : "Included";
-                                            return `
-                                                <button type="button" 
-                                                        class="var-b-option-card var-b-side-card ${isSelected ? "active" : ""}" 
-                                                        data-side-id="${s.id}"
-                                                        role="radio"
-                                                        aria-checked="${isSelected}">
-                                                    <div class="card-radio-mark">${isSelected ? "✓" : ""}</div>
-                                                    <span class="card-option-name">${s.name}</span>
-                                                    <span class="card-option-sub">${extraText}</span>
-                                                </button>
-                                            `;
-                                        }).join("")}
+                        <div class="var-b-selections-column">
+                            <div class="var-b-combo-wrapper">
+                                <!-- Combo vs No Combo Toggle -->
+                                <div class="var-b-combo-toggle-wrapper">
+                                    <span class="var-b-combo-toggle-label">Make it a Combo?</span>
+                                    <div class="combo-solo-toggle var-b-combo-toggle" role="group" aria-label="Combo or Solo Selection">
+                                        <button type="button" class="toggle-mode-btn ${!isCombo ? "active" : ""}" id="var-b-toggle-solo">
+                                            No Combo (Solo)
+                                        </button>
+                                        <button type="button" class="toggle-mode-btn ${isCombo ? "active" : ""}" id="var-b-toggle-combo">
+                                            Make it a Combo (+$${(comboOptions.basePrice || 4.99).toFixed(2)})
+                                        </button>
                                     </div>
                                 </div>
 
-                                <!-- Drinks Section -->
-                                <div class="var-b-combo-group">
-                                    <div class="var-b-combo-group-header">
-                                        <span class="var-b-combo-group-title">Choose Drink</span>
-                                        <span class="var-b-combo-group-subtitle">Select 1 option</span>
+                                <!-- No Combo Message -->
+                                <div class="var-b-no-combo-banner ${isCombo ? "hidden" : ""}" id="var-b-no-combo-msg">
+                                    Solo burger selected. Switch to <strong>Make it a Combo</strong> above to add a side and drink.
+                                </div>
+
+                                <!-- Combo Sides & Drinks Options (Disappear if no combo is selected) -->
+                                <div class="var-b-combo-options ${isCombo ? "" : "hidden"}" id="var-b-combo-options">
+                                    <!-- Sides Section -->
+                                    <div class="var-b-combo-group">
+                                        <div class="var-b-combo-group-header">
+                                            <span class="var-b-combo-group-title">Choose Side</span>
+                                            <span class="var-b-combo-group-subtitle">Select 1 option</span>
+                                        </div>
+                                        <div class="var-b-combo-grid" id="var-b-sides-grid" role="radiogroup" aria-label="Choose a side">
+                                            ${sides.map(s => {
+                                                const isSelected = builderState.combo.sideId === s.id;
+                                                const extraText = (s.extraPrice && s.extraPrice > 0)
+                                                    ? `+$${s.extraPrice.toFixed(2)}`
+                                                    : "Included";
+                                                return `
+                                                    <button type="button" 
+                                                            class="var-b-option-card var-b-side-card ${isSelected ? "active" : ""}" 
+                                                            data-side-id="${s.id}"
+                                                            role="radio"
+                                                            aria-checked="${isSelected}">
+                                                        <div class="card-radio-mark">${isSelected ? "✓" : ""}</div>
+                                                        <span class="card-option-name">${s.name}</span>
+                                                        <span class="card-option-sub">${extraText}</span>
+                                                    </button>
+                                                `;
+                                            }).join("")}
+                                        </div>
                                     </div>
-                                    <div class="var-b-combo-grid" id="var-b-drinks-grid" role="radiogroup" aria-label="Choose a drink">
-                                        ${drinks.map(d => {
-                                            const isSelected = builderState.combo.drinkId === d.id;
-                                            const extraText = (d.extraPrice && d.extraPrice > 0)
-                                                ? `+$${d.extraPrice.toFixed(2)}`
-                                                : "Included";
-                                            return `
-                                                <button type="button" 
-                                                        class="var-b-option-card var-b-drink-card ${isSelected ? "active" : ""}" 
-                                                        data-drink-id="${d.id}"
-                                                        role="radio"
-                                                        aria-checked="${isSelected}">
-                                                    <div class="card-radio-mark">${isSelected ? "✓" : ""}</div>
-                                                    <span class="card-option-name">${d.name}</span>
-                                                    <span class="card-option-sub">${extraText}</span>
-                                                </button>
-                                            `;
-                                        }).join("")}
+
+                                    <!-- Drinks Section -->
+                                    <div class="var-b-combo-group">
+                                        <div class="var-b-combo-group-header">
+                                            <span class="var-b-combo-group-title">Choose Drink</span>
+                                            <span class="var-b-combo-group-subtitle">Select 1 option</span>
+                                        </div>
+                                        <div class="var-b-combo-grid" id="var-b-drinks-grid" role="radiogroup" aria-label="Choose a drink">
+                                            ${drinks.map(d => {
+                                                const isSelected = builderState.combo.drinkId === d.id;
+                                                const extraText = (d.extraPrice && d.extraPrice > 0)
+                                                    ? `+$${d.extraPrice.toFixed(2)}`
+                                                    : "Included";
+                                                return `
+                                                    <button type="button" 
+                                                            class="var-b-option-card var-b-drink-card ${isSelected ? "active" : ""}" 
+                                                            data-drink-id="${d.id}"
+                                                            role="radio"
+                                                            aria-checked="${isSelected}">
+                                                        <div class="card-radio-mark">${isSelected ? "✓" : ""}</div>
+                                                        <span class="card-option-name">${d.name}</span>
+                                                        <span class="card-option-sub">${extraText}</span>
+                                                    </button>
+                                                `;
+                                            }).join("")}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

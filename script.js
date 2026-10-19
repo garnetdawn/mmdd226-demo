@@ -350,9 +350,31 @@ function handleOpenBuilder(item) {
 }
 
 /**
- * Add an item to cart
+ * Open cart drawer
  */
-function addToCart(item) {
+function openCart() {
+    if (cartDrawer && cartDrawerOverlay) {
+        cartDrawer.classList.add("active");
+        cartDrawerOverlay.classList.add("active");
+        cartDrawer.setAttribute("aria-hidden", "false");
+    }
+}
+
+/**
+ * Close cart drawer
+ */
+function closeCart() {
+    if (cartDrawer && cartDrawerOverlay) {
+        cartDrawer.classList.remove("active");
+        cartDrawerOverlay.classList.remove("active");
+        cartDrawer.setAttribute("aria-hidden", "true");
+    }
+}
+
+/**
+ * Add an item to cart and open cart drawer
+ */
+function addToCart(item, shouldOpenCart = true) {
     state.cart.push({
         id: item.id,
         name: item.name,
@@ -366,7 +388,15 @@ function addToCart(item) {
         console.warn("Could not save cart to localStorage", e);
     }
     updateCartUI();
+    if (shouldOpenCart) {
+        openCart();
+    }
 }
+
+// Global access for other modules
+window.addToCart = addToCart;
+window.openCart = openCart;
+window.closeCart = closeCart;
 
 /**
  * Remove an item from cart
@@ -425,18 +455,6 @@ function updateCartUI() {
  * Setup event listeners for cart drawer
  */
 function setupCartListeners() {
-    function openCart() {
-        cartDrawer.classList.add("active");
-        cartDrawerOverlay.classList.add("active");
-        cartDrawer.setAttribute("aria-hidden", "false");
-    }
-
-    function closeCart() {
-        cartDrawer.classList.remove("active");
-        cartDrawerOverlay.classList.remove("active");
-        cartDrawer.setAttribute("aria-hidden", "true");
-    }
-
     cartBtn.addEventListener("click", openCart);
     closeCartBtn.addEventListener("click", closeCart);
     cartDrawerOverlay.addEventListener("click", closeCart);

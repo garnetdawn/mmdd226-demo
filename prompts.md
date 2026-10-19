@@ -552,4 +552,144 @@ This document tracks all user prompts and the corresponding actions taken during
     - Combined builder stepper item rows and item info (`.var-b-item-list` / `.var-b-patty-list`, `.var-b-item-row` / `.var-b-patty-row`, `.var-b-item-info` / `.patty-info`, `.var-b-item-name` / `.patty-name`, `.var-b-item-pricing-note` / `.patty-pricing-note`).
     - Consolidated card footer styles (`.card-footer`, `.byo-card-footer`).
   - Preserved complete original styling and layout across desktop and responsive views.
-- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/PROTOTYPE/prompts.md):** Recorded this prompt and the actions taken.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+---
+
+## Prompt 32
+> **User Prompt:**  
+> "Lets replace the SVGs in the builder with placeholders for images instead. Do not generate images. I will add the images myself next.  
+>  
+> bun tops: 230px width x 50px height.  
+> bun bottom: 230px width x 30 px height.  
+> Patties: 230px width x 30 px height.  
+> toppings: 230px width x 20 px height."
+
+### Actions Taken:
+- **Updated [builder-options.json](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/builder-options.json):**
+  - Added image placeholder properties across all builder options:
+    - `imageTop` and `imageBottom` for all bread bun varieties (*sesame, gluten-free, multigrain, potato-bun, ciabatta*).
+    - `image` for all patty options (*4oz, 6oz, 8oz beef patties, crispy smash patty, crispy chicken, plant-based beef & chicken*).
+    - `image` for all toppings (*cheeses, bacon, egg, guacamole, onions, mushrooms*).
+    - `image` for all salads (*pickle, lettuce, tomato, red onion, jalapeno*).
+    - `image` for all sauces (*mustard, mayo, bbq, relish, mango sauces, honey dijon, hot sauce, chipotle sauces*).
+- **Updated [builder-logic.js](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/builder-logic.js):**
+  - Synchronized `FALLBACK_BUILDER_OPTIONS` with the updated patty options, sauces, and image paths.
+- **Updated [variation-b.js](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/variation-b.js):**
+  - Replaced inline SVG bun functions (`getTopBunSvg`, `getBottomBunSvg`) with image placeholder generators (`getTopBunVisual`, `getBottomBunVisual`).
+  - Replaced SVG burger fillings generator (`getCentralizedBurgerSvg`) with dynamic image placeholder stacking (`getCentralizedBurgerVisual`).
+  - Implemented automatic image loading with mid-fidelity dashed wireframe fallbacks (`onerror`/`onload`) so placeholders display cleanly until the user adds their image files, and display images seamlessly once provided.
+  - Updated default initial patty selection to match the active patty options list.
+- **Updated [styles.css](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/styles.css):**
+  - Applied the exact specified dimensions for all burger stage visual layers:
+    - **bun tops:** `230px` width &times; `50px` height (`.var-b-layer-bun-top`, `.var-b-ph-bun-top`, `.var-b-img-bun-top`).
+    - **bun bottom:** `230px` width &times; `30px` height (`.var-b-layer-bun-bottom`, `.var-b-ph-bun-bottom`, `.var-b-img-bun-bottom`).
+    - **Patties:** `230px` width &times; `30px` height (`.var-b-layer-patty`, `.var-b-ph-patty`, `.var-b-img-patty`).
+    - **toppings (toppings, salads, sauces):** `230px` width &times; `20px` height (`.var-b-layer-topping`, `.var-b-ph-topping`, `.var-b-img-topping`).
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+---
+
+## Prompt 33
+> **User Prompt:**  
+> "nice, perfect.  
+>  
+> Now, lets adjust the layout of the builder a little. We will make it more responsive.  
+>  
+> Separate the container of the burger visualizer from the rest. It should not be part of the scroll and stay on screen at all times.  
+>  
+> The two containers should be in a flexbox. So that on desktop, the burger is on the left side and selections are on the right side. On mobile, it should be stacked like it is currently."
+
+### Actions Taken:
+- **Updated [variation-b.js](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/variation-b.js):**
+  - Created `renderVisualizerColumnHtml(currentPrice)` helper function that encapsulates the burger visualizer stage (`.var-b-visual-column` containing `.var-b-stage`, preview stack, and price badge).
+  - Separated the visualizer container from the selections across all 6 steps (`1: BREAD`, `2: PATTY`, `3: TOPPINGS`, `4: SALADS`, `5: SAUCES`, `6: COMBO`).
+  - Wrapped each step's option controls inside a dedicated `.var-b-selections-column` container.
+- **Updated [styles.css](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/styles.css):**
+  - Expanded `.var-b-modal` to `width: 860px` with a fixed height to comfortably host the side-by-side desktop layout.
+  - Configured `.var-b-body` as a flexbox row (`flex-direction: row; gap: 24px; overflow: hidden;`), locking the burger visualizer column into place.
+  - Styled `.var-b-visual-column` with fixed width (`290px`) and `flex-shrink: 0` so it does not scroll and remains visible at all times.
+  - Styled `.var-b-selections-column` with `flex: 1` and `overflow-y: auto`, enabling independent scrolling for option cards and lists.
+  - Updated `.var-b-cards-grid` to responsive auto-fill layout (`repeat(auto-fill, minmax(140px, 1fr))`).
+  - Added mobile responsive styling (`@media (max-width: 768px)`):
+    - Reverted `.var-b-body` to flex column (`flex-direction: column`) so the visualizer is stacked on top and selections are below.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+---
+
+## Prompt 34
+> **User Prompt:**  
+> "remove the 4oz Beef Patty from the default selection of patties."
+
+### Actions Taken:
+- **Updated [variation-b.js](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/variation-b.js):**
+  - Updated `openBuilderVariationB()` to initialize `builderState.patties = {}` (empty object) instead of pre-selecting the 4oz Beef Patty, matching the user's update in `builder-logic.js`.
+  - Updated `getSaladsStatusText()` and `getSaucesStatusText()` to dynamically read `freeCount` from configuration (4 for salads, 2 for sauces).
+- **Updated [builder-options.json](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/builder-options.json):**
+  - Synchronized `freeCount` for salads (`4`) and sauces (`2`) to match the updated rules in `builder-logic.js`.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+## Prompt 35
+> **User Prompt:**  
+> "when adding regular menu items to the cart, make the cart open as well."
+
+### Actions Taken:
+- **Updated [script.js](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/script.js):**
+  - Exposed `openCart()` and `closeCart()` globally on `window` and ensured they manage the `.active` class and `aria-hidden` attribute on the cart drawer and overlay.
+  - Updated `addToCart(item, shouldOpenCart = true)` to automatically invoke `openCart()` whenever an item is added.
+  - Verified that clicking "Add to Cart" on regular menu cards triggers `addToCart(item)` and immediately opens the cart drawer for seamless feedback.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+## Prompt 36
+> **User Prompt:**  
+> "this feels a bit too shady to do. I will provide you screenshots instead."
+
+### Actions Taken:
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt. Acknowledged the user's preference to work from screenshots for design and content reference.
+
+## Prompt 37
+> **User Prompt:**  
+> "for the main menu and cards. Extract only UI styling, do not change the layout we already have."
+
+### Actions Taken:
+- **Extracted UI Kit from Provided Screenshots:**
+  - **Header / Top Bar:** Dark espresso navigation bar (`#2b201e`), white branding, subtle pill toggle containers with crimson active indicator (`#9a2835`), and refined cart button with crimson notification badge.
+  - **Sidebar / Category Navigation:** Clean white background (`#ffffff`), dark charcoal item typography (`#444444`), and signature active tab styling featuring a soft blush background tint (`#fcedee`), 3.5px solid crimson left indicator strip (`#9a2835`), and bold crimson text.
+  - **Menu Cards & Grid:** Preserved the existing 4-column responsive layout while updating the visual styling to match: pure white card backdrops (`#ffffff`), seamless 1px subtle borders, smooth 14px border radius, soft ambient drop shadows (`0 4px 16px rgba(0, 0, 0, 0.06)`), transparent burger image framing, bold Montserrat titles (`700`), muted descriptions (`#666666`), and rounded pill action buttons (`#9a2835`).
+  - **Featured Build-Your-Own Card:** Retained exact layout while applying matching white surface, soft shadow, crimson pill tag (`#fcedee` / `#9a2835`), and bold primary button styling.
+- **Updated [styles.css](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/styles.css):** Updated color palette tokens, navigation header, sidebar category items, menu cards, and drawer action buttons.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the styling updates applied.
+
+## Prompt 38
+> **User Prompt:**  
+> "please apply that UI kit to the builder menu as well."
+
+### Actions Taken:
+- **Updated [styles.css](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/styles.css):**
+  - **Modal container:** Refined border (`1px solid rgba(0,0,0,0.08)`), smooth `20px` border-radius, and deeper shadow.
+  - **Header:** Light `#ebebeb` bottom border, tighter letter-spacing on step title.
+  - **Stepper dots:** Active dot is now brand crimson (`#9a2835`) with scale-up + shadow; completed dot is dark espresso (`#2b201e`); stepper line turns crimson when passed.
+  - **Visualizer stage:** Clean `#fafafa` background with subtle `1px` border and `16px` radius.
+  - **Price badge:** Pill-shaped, white surface, crimson price value.
+  - **Option cards (bread grid → now list, see Prompt 39):** Blush hover tint, crimson selected border + fill on radio mark.
+  - **NEXT button:** Changed from outline button to filled dark espresso pill (`#2b201e`), matching the navigation bar.
+  - **Item rows:** Selected state now uses crimson left border and blush fill.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the styling updates applied.
+
+## Prompt 39
+> **User Prompt:**  
+> "on step 1 of the builder, make the bread options a list instead of a grid, to match the rest of the builder."
+
+### Actions Taken:
+- **Updated [variation-b.js](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/variation-b.js):**
+  - Replaced the `var-b-cards-grid` + `var-b-option-card` card grid in `renderBreadStep()` with a `var-b-item-list` + `var-b-item-row` list, matching the layout used in Steps 2–5.
+  - Each bread option now shows as a full-width row: bread name on the left, "Included" pricing note below it, and a circular radio indicator on the right.
+  - Updated `setupBreadEvents()` to listen on `.var-b-item-row` instead of `.var-b-option-card`.
+  - Added an informational hint banner at the top of the list ("Choose 1 bread option. All options are included.").
+- **Updated [styles.css](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/styles.css):**
+  - Added `.var-b-bread-radio` and `.var-b-bread-radio.selected` — a 32px circular radio indicator styled to match the stepper `+`/`-` buttons, filling with crimson (`#9a2835`) when selected.
+- **Updated [prompts.md](file:///c:/Users/regin/Documents/GitHub/mmdd226-demo/prompts.md):** Recorded this prompt and the actions taken.
+
+
+
+
