@@ -116,8 +116,6 @@ const FALLBACK_MENU_DATA = {
   ]
 };
 
-
-
 // Application State
 const state = {
     menuData: null,
@@ -179,11 +177,21 @@ async function init() {
 }
 
 /**
+ * Helper to save active cart to localStorage
+ */
+function saveCart() {
+    try {
+        localStorage.setItem("burgerCart", JSON.stringify(state.cart));
+    } catch (e) {
+        console.warn("Could not save cart to localStorage", e);
+    }
+}
+
+/**
  * Setup event listeners for the Build Your Own featured row card
  */
 function setupByoFeatureCard() {
     const byoCard = document.getElementById("byo-card");
-    const byoBtn = document.getElementById("byo-feature-btn");
 
     function triggerByo() {
         const byoItem = (state.menuData && state.menuData.items)
@@ -197,14 +205,17 @@ function setupByoFeatureCard() {
         handleOpenBuilder(byoItem);
     }
 
-    byoBtn?.addEventListener("click", (e) => {
-        e.stopPropagation();
-        triggerByo();
-    });
-
-    byoCard?.addEventListener("click", () => {
-        triggerByo();
-    });
+    if (byoCard) {
+        byoCard.addEventListener("click", () => {
+            triggerByo();
+        });
+        byoCard.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                triggerByo();
+            }
+        });
+    }
 }
 
 /**
@@ -300,13 +311,12 @@ function renderMenu() {
     filteredItems.forEach((item) => {
         const card = document.createElement("article");
         card.className = "menu-card";
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
 
         const badgeHtml = item.isCustomizable
             ? `<div class="card-badge-container"><span class="badge">Customizable</span></div>`
             : "";
-
-        const actionBtnText = item.isCustomizable ? "Build Your Own" : "Add to Cart";
-        const actionBtnClass = item.isCustomizable ? "card-action-btn btn-custom" : "card-action-btn";
 
         card.innerHTML = `
             <div class="card-image-box">
@@ -318,19 +328,23 @@ function renderMenu() {
                 <p class="card-desc">${item.description}</p>
                 <div class="card-footer">
                     <span class="card-price">$${item.price.toFixed(2)}</span>
-                    <button type="button" class="${actionBtnClass}" data-id="${item.id}">
-                        ${actionBtnText}
-                    </button>
                 </div>
             </div>
         `;
 
-        const actionBtn = card.querySelector(".card-action-btn");
-        actionBtn.addEventListener("click", () => {
+        function handleItemClick() {
             if (item.isCustomizable) {
                 handleOpenBuilder(item);
             } else {
                 addToCart(item);
+            }
+        }
+
+        card.addEventListener("click", handleItemClick);
+        card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleItemClick();
             }
         });
 
@@ -376,25 +390,95 @@ function closeCart() {
  */
 function addToCart(item, shouldOpenCart = true) {
     state.cart.push({
-        id: item.id,
+        id: item.id || `item-${Date.now()}`,
         name: item.name,
         price: item.price,
         description: item.description || "",
+        isCustom: !!item.isCustom,
+        category: item.category || "",
+        builderConfig: item.builderConfig ? JSON.parse(JSON.stringify(item.builderConfig)) : null,
         addedAt: Date.now()
     });
-    try {
-        localStorage.setItem("burgerCart", JSON.stringify(state.cart));
-    } catch (e) {
-        console.warn("Could not save cart to localStorage", e);
-    }
+    saveCart();
     updateCartUI();
     if (shouldOpenCart) {
         openCart();
     }
 }
 
+/**
+ * Update an existing cart item (e.g. after editing in builder)
+ */
+function updateCartItem(index, updatedItem) {
+    if (index >= 0 && index < state.cart.length) {
+        state.cart[index] = {
+            ...state.cart[index],
+            name: updatedItem.name,
+            price: updatedItem.price,
+            description: updatedItem.description || "",
+            isCustom: true,
+            category: updatedItem.category || state.cart[index].category || "custom",
+            builderConfig: updatedItem.builderConfig
+                ? JSON.parse(JSON.stringify(updatedItem.builderConfig))
+                : state.cart[index].builderConfig,
+            updatedAt: Date.now()
+        };
+        saveCart();
+        updateCartUI();
+        openCart();
+    }
+}
+
+/**
+ * Helper to check if a cart item is an editable burger
+ */
+function isBurgerItem(item) {
+    if (!item) return false;
+    if (item.isCustom || item.builderConfig) return true;
+    if (item.category === "custom" || item.category === "burgers") return true;
+    const id = (item.id || "").toLowerCase();
+    const name = (item.name || "").toLowerCase();
+    return id.includes("burger") || name.includes("burger") || name.includes("hero");
+}
+
+/**
+ * Edit a cart item, returning the user to the builder to modify their options
+ */
+function editCartItem(index) {
+    const item = state.cart[index];
+    if (!item) return;
+
+    // Close the cart drawer while builder is open
+    closeCart();
+
+    // Prepare configuration to restore in the builder
+    let config = item.builderConfig ? JSON.parse(JSON.stringify(item.builderConfig)) : null;
+
+    if (!config) {
+        // Construct sensible initial config for standard burger
+        config = {
+            bread: "sesame",
+            patties: { "beef-patty-4": 1 },
+            toppings: {},
+            salads: {},
+            sauces: {},
+            combo: { isCombo: false, sideId: "fries", drinkId: "fountain-drink" },
+            baseItem: item
+        };
+    }
+
+    if (typeof window.openBuilderVariationB === "function") {
+        window.openBuilderVariationB(config.baseItem || item, config, index);
+    } else {
+        console.error("openBuilderVariationB is not available");
+    }
+}
+
 // Global access for other modules
 window.addToCart = addToCart;
+window.updateCartItem = updateCartItem;
+window.editCartItem = editCartItem;
+window.getCartItem = (index) => state.cart[index];
 window.openCart = openCart;
 window.closeCart = closeCart;
 
@@ -403,11 +487,7 @@ window.closeCart = closeCart;
  */
 function removeFromCart(index) {
     state.cart.splice(index, 1);
-    try {
-        localStorage.setItem("burgerCart", JSON.stringify(state.cart));
-    } catch (e) {
-        console.warn("Could not save cart to localStorage", e);
-    }
+    saveCart();
     updateCartUI();
 }
 
@@ -434,13 +514,26 @@ function updateCartUI() {
         state.cart.forEach((item, index) => {
             const row = document.createElement("div");
             row.className = "cart-item-row";
+            const canEdit = isBurgerItem(item);
+
             row.innerHTML = `
                 <div class="cart-item-info">
                     <span class="cart-item-title">${item.name}</span>
+                    ${item.description ? `<span class="cart-item-desc">${item.description}</span>` : ""}
                     <span class="cart-item-price">$${item.price.toFixed(2)}</span>
                 </div>
-                <button type="button" class="cart-item-remove" data-index="${index}" title="Remove item">&times;</button>
+                <div class="cart-item-actions">
+                    ${canEdit ? `<button type="button" class="cart-item-edit" data-index="${index}" title="Edit burger options"><svg class="cart-edit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg><span>Edit</span></button>` : ""}
+                    <button type="button" class="cart-item-remove" data-index="${index}" title="Remove item">&times;</button>
+                </div>
             `;
+
+            if (canEdit) {
+                const editBtn = row.querySelector(".cart-item-edit");
+                editBtn?.addEventListener("click", () => {
+                    editCartItem(index);
+                });
+            }
 
             row.querySelector(".cart-item-remove").addEventListener("click", () => {
                 removeFromCart(index);

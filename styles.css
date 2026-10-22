@@ -173,14 +173,14 @@ body {
     border-radius: var(--radius-pill);
     font-size: 0.85rem;
     font-weight: 600;
-    color: #e5e5e5;
+    color: #808080;
     cursor: pointer;
     transition: all 0.15s ease;
 }
 
 .toggle-btn:hover,
 .toggle-mode-btn:hover {
-    color: var(--white);
+    color: var(--red);
 }
 
 .toggle-btn.active,
@@ -343,7 +343,13 @@ body {
 .byo-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-card-hover);
-    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.menu-card:focus-visible,
+.byo-card:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+
 }
 
 .byo-card-image {
@@ -527,12 +533,19 @@ body {
     flex-direction: column;
     box-shadow: var(--shadow-card);
     transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
 }
 
 .menu-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(0, 0, 0, 0.08);
+
     box-shadow: var(--shadow-card-hover);
+}
+
+.menu-card:focus-visible,
+.byo-card:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
 }
 
 /* Placeholder Image Box */
@@ -741,6 +754,8 @@ body {
 }
 
 .cart-item-row {
+    margin-bottom: 8px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -773,6 +788,65 @@ body {
     font-size: 1.1rem;
     cursor: pointer;
     padding: 4px;
+}
+
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-left: 10px;
+    margin-top: 2px;
+}
+
+.cart-item-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    font-family: var(--font-stack);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--red);
+    background-color: var(--red-subtle);
+    border: 1px solid var(--red-border);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.cart-item-edit:hover {
+    background-color: var(--red);
+    color: var(--white);
+    border-color: var(--red);
+    box-shadow: 0 2px 8px rgba(154, 40, 53, 0.25);
+    transform: translateY(-1px);
+}
+
+.cart-item-edit:active {
+    transform: translateY(0);
+}
+
+.cart-item-edit:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+}
+
+.cart-edit-icon {
+    width: 11px;
+    height: 11px;
+    stroke: currentColor;
+}
+
+.cart-item-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+    margin: 3px 0 2px;
+    max-width: 220px;
+    word-break: break-word;
 }
 
 .cart-item-remove:hover {
@@ -1194,7 +1268,7 @@ body {
 
 .var-b-header {
     display: flex;
-    align-items: flex-start;
+
     justify-content: space-between;
     padding: 20px 24px 14px;
     border-bottom: 1px solid var(--border-color);

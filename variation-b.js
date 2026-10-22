@@ -21,7 +21,8 @@
         salads: {},
         sauces: {},
         combo: { isCombo: false, sideId: "fries", drinkId: "fountain-drink" },
-        baseItem: null
+        baseItem: null,
+        editingCartIndex: null
     };
 
     /**
@@ -273,6 +274,18 @@
      * Close Variation B modal
      */
     function closeBuilder() {
+        const wasEditing = (builderState.editingCartIndex !== null);
+        builderState.editingCartIndex = null;
+        if (builderModalRoot) {
+            builderModalRoot.innerHTML = "";
+        }
+        if (wasEditing && typeof window.openCart === "function") {
+            window.openCart();
+        }
+        return;
+    }
+
+    function _oldCloseBuilder() {
         if (builderModalRoot) {
             builderModalRoot.innerHTML = "";
         }
@@ -281,7 +294,42 @@
     /**
      * Open Variation B Modal
      */
-    window.openBuilderVariationB = function (item) {
+    window.openBuilderVariationB = function (item, existingConfig = null, cartIndex = null) {
+        if (!builderModalRoot) {
+            builderModalRoot = document.getElementById("builder-modal-root");
+        }
+        if (!builderModalRoot) {
+            console.error("builder-modal-root element not found in DOM");
+            return;
+        }
+
+        builderState.editingCartIndex = (typeof cartIndex === "number" && cartIndex >= 0) ? cartIndex : null;
+        builderState.baseItem = (existingConfig && existingConfig.baseItem) ? existingConfig.baseItem : item;
+        builderState.currentStep = 1;
+
+        if (existingConfig) {
+            builderState.bread = existingConfig.bread || "sesame";
+            builderState.patties = existingConfig.patties ? JSON.parse(JSON.stringify(existingConfig.patties)) : {};
+            builderState.toppings = existingConfig.toppings ? JSON.parse(JSON.stringify(existingConfig.toppings)) : {};
+            builderState.salads = existingConfig.salads ? JSON.parse(JSON.stringify(existingConfig.salads)) : {};
+            builderState.sauces = existingConfig.sauces ? JSON.parse(JSON.stringify(existingConfig.sauces)) : {};
+            builderState.combo = existingConfig.combo
+                ? JSON.parse(JSON.stringify(existingConfig.combo))
+                : { isCombo: false, sideId: "fries", drinkId: "fountain-drink" };
+        } else {
+            builderState.bread = "sesame";
+            builderState.patties = {}; // No default patty selected
+            builderState.toppings = {};
+            builderState.salads = {};
+            builderState.sauces = {};
+            builderState.combo = { isCombo: false, sideId: "fries", drinkId: "fountain-drink" };
+        }
+
+        renderStep(1);
+        return;
+    };
+
+    function _oldOpenBuilderVariationB() {
         if (!builderModalRoot) {
             builderModalRoot = document.getElementById("builder-modal-root");
         }
@@ -1204,7 +1252,7 @@
                             <span class="back-arrow">&#9664;</span> BACK
                         </button>
                         <button type="button" class="var-b-next-btn var-b-add-cart-btn" id="var-b-finish">
-                            ADD TO CART <span class="next-arrow">&#9654;</span>
+                            ${builderState.editingCartIndex !== null ? "UPDATE BURGER" : "ADD TO CART"} <span class="next-arrow">&#9654;</span>
                         </button>
                     </div>
                 </div>
@@ -1353,6 +1401,37 @@
                 price: currentPrice,
                 isCustom: true
             };
+
+            customItem.category = "custom";
+            customItem.builderConfig = {
+                bread: builderState.bread,
+                patties: JSON.parse(JSON.stringify(builderState.patties)),
+                toppings: JSON.parse(JSON.stringify(builderState.toppings)),
+                salads: JSON.parse(JSON.stringify(builderState.salads)),
+                sauces: JSON.parse(JSON.stringify(builderState.sauces)),
+                combo: JSON.parse(JSON.stringify(builderState.combo)),
+                baseItem: builderState.baseItem
+            };
+
+            const targetIndex = builderState.editingCartIndex;
+            builderState.editingCartIndex = null;
+
+            if (targetIndex !== null && typeof window.updateCartItem === "function") {
+                window.updateCartItem(targetIndex, customItem);
+            } else if (typeof addToCart === "function") {
+                addToCart(customItem);
+            } else if (window.addToCart) {
+                window.addToCart(customItem);
+            }
+
+            if (builderModalRoot) {
+                builderModalRoot.innerHTML = "";
+            }
+
+            if (typeof window.openCart === "function") {
+                window.openCart();
+            }
+            return;
 
             // Add to cart state
             if (typeof addToCart === "function") {
